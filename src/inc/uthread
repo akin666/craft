@@ -1,0 +1,56 @@
+// Only use the code below if we have GCC with no support for GNU threads 
+// source:
+// https://gist.github.com/1154023
+
+#ifdef __linux
+#warning USING C++11 Threads
+# include <thread>
+# include <mutex>
+
+#else
+
+#if defined(_GLIBCXX_HAS_GTHREADS) && defined(__GNUG__)
+#warning USING C++11 Threads
+# include <thread>
+# include <mutex>
+#else
+/* The boost thread library is used as a replacement for the standard thread
+* library. We'll consider it to be fully compatible with the missing library.
+* See http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2008/n2497.html
+*/
+
+//#warning USING BOOST C++11 emulation Threads
+#include <boost/thread/thread.hpp>
+#include <boost/thread/mutex.hpp>
+#include <boost/thread/recursive_mutex.hpp>
+#include <boost/thread/locks.hpp>
+#include <boost/thread/condition_variable.hpp>
+#include <boost/ref.hpp>
+
+/* Only classes are copied. Use boost directly or a real standard library if
+* you want free functions.
+*/
+
+namespace std
+{
+  using boost::thread;
+  
+  using boost::mutex;
+  using boost::timed_mutex;
+  using boost::recursive_mutex;
+  using boost::recursive_timed_mutex;
+  
+  using boost::lock_guard;
+  using boost::unique_lock;
+  
+  using boost::condition_variable;
+  using boost::condition_variable_any;
+  
+  
+//  using boost::ref;
+  using namespace boost::this_thread;
+}
+
+#endif // Crippled GCC 
+
+#endif // linux

@@ -1,0 +1,101 @@
+
+#ifndef _STDGL_H_
+#define _STDGL_H_
+
+#include <stdtypes>
+
+//#define USE_GLEE
+#define USE_GLEW
+//#define USE_GLFW
+//#define USE_SDL
+//#define USE_GL
+//#define USE_GL3
+#define USE_GLUT
+
+#define GL_NULL 0
+
+#ifdef USE_GLEE
+# include <GL/GLee.h> // todo!
+#else
+#endif
+
+#if defined(USE_GLEW) and defined(OS_WINDOWS)
+//# define GLEW_STATIC
+# include <GL/glew.h>
+#else
+#endif
+
+#ifdef USE_GLFW
+# ifdef USE_GL3
+#  define GL3_PROTOTYPES 1
+#  define GLFW_INCLUDE_GL3 
+# endif
+# include <GL/glfw.h>
+#else
+#endif
+
+#ifdef USE_GLUT
+# include <GL/freeglut.h>
+#endif
+
+#ifdef USE_SDL
+# include <SDL/SDL.h>
+#else
+#endif
+
+#ifdef USE_GL
+# include <GL/gl.h>
+#else
+#endif
+
+#ifdef USE_GL3
+# define GL3_PROTOTYPES 1
+# include <GL3/gl3.h>
+#else
+#endif
+
+#ifndef GL_INITIALIZATION
+# define GL_INITIALIZATION true
+#endif
+
+#if 0
+# define OPENGL_ES1_	0x0001
+# define OPENGL_ES2_	0x0002
+# define OPENGL_2_0_	0x0004
+# define OPENGL_2_1_	0x0008
+# define OPENGL_3_0_	0x0010
+# define OPENGL_3_1_	0x0020
+# define OPENGL_3_2_	0x0040
+# define OPENGL_3_3_	0x0080
+# define OPENGL_4_0_	0x0100
+# define OPENGL_4_1_	0x0200
+# define OPENGL_4_2_	0x0400
+#endif
+
+#if not defined(LOG_SYSTEM_ERROR)
+# include <log>
+# define LOG_SYSTEM_ERROR LOG->error
+#endif
+
+#define GL_FLUSH_ERRORS() while( glGetError() != GL_NO_ERROR )
+
+#ifndef _RELEASE
+# define GL_TEST_ERROR(txt) { \
+  int gl_error_var; \
+  while( ( gl_error_var = glGetError() ) != GL_NO_ERROR ) { \
+  switch( gl_error_var ) { \
+	case GL_NO_ERROR : break; \
+	case GL_INVALID_VALUE : { LOG_SYSTEM_ERROR( "%s:%i GL_INVALID_VALUE %s" , __FILE__ , __LINE__ , txt ); break; } \
+	case GL_INVALID_ENUM : { LOG_SYSTEM_ERROR( "%s:%i GL_INVALID_ENUM %s" , __FILE__ , __LINE__ , txt ); break; } \
+	case GL_INVALID_OPERATION : { LOG_SYSTEM_ERROR( "%s:%i GL_INVALID_OPERATION %s" , __FILE__ , __LINE__ , txt ); break; } \
+	case GL_OUT_OF_MEMORY : { LOG_SYSTEM_ERROR( "%s:%i GL_OUT_OF_MEMORY %s" , __FILE__ , __LINE__ , txt ); break; } \
+	default : { LOG_SYSTEM_ERROR( "%s:%i GL WTF! %s" , __FILE__ , __LINE__ , txt ); break; } \
+  } } }
+#else
+# define GL_TEST_ERROR(txt)
+#endif
+
+#define GL_TEST_START() GL_TEST_ERROR("begin")
+#define GL_TEST_END() GL_TEST_ERROR("end")
+
+#endif // _STDGL_H_ 

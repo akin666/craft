@@ -1,0 +1,132 @@
+#ifndef DELEGATE_HPP
+# define DELEGATE_HPP
+
+// impossibly fast delegate in C++11
+// http://codereview.stackexchange.com/questions/14730/impossibly-fast-delegate-in-c11
+// 
+
+#include <utility>
+
+template <typename T> class delegate;
+
+template<class R, class ...A>
+class delegate<R (A...)>
+{
+  typedef R (*stub_ptr_type)(void*, A...);
+
+  delegate(void* o, stub_ptr_type m)
+    : object_ptr(o),
+      stub_ptr(m)
+  {
+  }
+
+public:
+  delegate() : stub_ptr(0) { }
+
+  template <
+    typename T,
+    typename = typename std::enable_if<
+      !std::is_same<delegate, typename std::remove_reference<T>::type>::value
+    >::type
+  >
+  delegate(T&& f)
+  {
+    *this = from_functor(std::forward<T>(f));
+  }
+
+  delegate(delegate const&) = default;
+
+  delegate& operator=(delegate const&) = default;
+
+  template <R (*function_ptr)(A...)>
+  static delegate from_function()
+  {
+    return delegate(0, function_stub<function_ptr>);
+  }
+
+  template <class C, R (C::*method_ptr)(A...)>
+  static delegate from_method(C* object)
+  {
+    return delegate(object, method_stub<C, method_ptr>);
+  }
+
+  template <class C, R (C::*method_ptr)(A...)>
+  static delegate from_const_method(C const* object)
+  {
+    return delegate(const_cast<C*>(object), const_method_stub<C, method_ptr>);
+  }
+
+  template <typename T>
+  static delegate from_functor(T&& f)
+  {
+    static typename std::remove_reference<T>::type const l(
+      std::forward<T>(f));
+
+    return delegate(const_cast<void*>(static_cast<void const*>(&l)),
+      functor_stub<T>);
+  }
+
+  void reset()
+  {
+    stub_ptr = 0;
+  }
+
+  void swap(delegate& other)
+  {
+    std::swap(object_ptr, other.object_ptr);
+    std::swap(stub_ptr, other.stub_ptr);
+  }
+
+  bool operator==(delegate const& rhs) const
+  {
+    return (stub_ptr == rhs.stub_ptr)
+      && (object_ptr == rhs.object_ptr);
+  }
+
+  bool operator<(delegate const& rhs) const
+  {
+    return (object_ptr < rhs.object_ptr)
+      || (stub_ptr < rhs.stub_ptr);
+  }
+
+  explicit operator bool() const
+  {
+    return stub_ptr;
+  }
+
+  template <typename ...B>
+  R operator()(B&&... args) const
+  {
+    return (*stub_ptr)(object_ptr, std::forward<B>(args)...);
+  }
+
+private:
+  void* object_ptr;
+  stub_ptr_type stub_ptr;
+
+  template <R (*function_ptr)(A...)>
+  static R function_stub(void*, A... args)
+  {
+    return (*function_ptr)(args...);
+  }
+
+  template <class C, R (C::*method_ptr)(A...)>
+  static R method_stub(void* object_ptr, A... args)
+  {
+    return (static_cast<C*>(object_ptr)->*method_ptr)(args...);
+  }
+
+  template <class C, R (C::*method_ptr)(A...) const>
+  static R const_method_stub(void* object_ptr, A... args)
+  {
+    return (static_cast<C const*>(object_ptr)->*method_ptr)(args...);
+  }
+
+  template <typename T>
+  static R functor_stub(void* object_ptr, A... args)
+  {
+    return (*static_cast<T*>(object_ptr))(args...);
+  }
+};
+
+#endif // DELEGATE_HPP

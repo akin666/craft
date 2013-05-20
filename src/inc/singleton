@@ -1,0 +1,108 @@
+/*
+ * singleton
+ *
+ *  Created on: 9.1.2012
+ *      Author: akin
+ */
+
+#ifndef SINGLETON_HPP_
+#define SINGLETON_HPP_
+
+#include <iostream>
+#include <uthread>
+#include <stdexcept>
+#include <memory>
+
+template <class CType>
+class Singleton
+{
+public:
+	typedef std::shared_ptr<CType> Ptr;
+private:
+	static std::mutex mutex;
+	static Ptr singleton;
+public:
+	static bool isSet()
+	{
+		std::lock_guard<std::mutex> lock(mutex);
+		return singleton;
+	}
+
+	static void reset()
+	{
+		std::lock_guard<std::mutex> lock(mutex);
+		singleton.reset();
+	}
+
+	static void set( Ptr& ct )
+	{
+		std::lock_guard<std::mutex> lock(mutex);
+		singleton = ct;
+	}
+
+	static Ptr get()
+	{
+		std::lock_guard<std::mutex> lock(mutex);
+		return singleton;
+	}
+
+	static void safeSet( Ptr ct )
+	{
+		std::lock_guard<std::mutex> lock(mutex);
+		singleton = ct;
+	}
+
+	static Ptr safeGet()
+	{
+		std::lock_guard<std::mutex> lock(mutex);
+		return singleton;
+	}
+	
+	static Ptr create()
+	{
+		std::lock_guard<std::mutex> lock(mutex);
+		if( !singleton ) 
+		{
+			Ptr tmp( new CType );
+			singleton = tmp;
+		}
+		return singleton;
+	}
+};
+
+template <class CType>
+typename Singleton<CType>::Ptr Singleton<CType>::singleton;
+
+template <class CType>
+std::mutex Singleton<CType>::mutex;
+
+// Syntactical Sugar:
+// getSingleton<MyClass>();
+// createSingleton<MyClass>();
+// setSingleton<MyClass>( new MyOtherClass );
+// unsetSingleton<MyClass>();
+template <class CType>
+typename Singleton<CType>::Ptr getSingleton() 
+{
+	return Singleton<CType>::get();
+}
+
+template <class CType>
+typename Singleton<CType>::Ptr createSingleton()
+{
+	return Singleton<CType>::create();
+}
+
+template <class CType>
+void setSingleton( typename Singleton<CType>::Ptr& ct ) 
+{
+	Singleton<CType>::set( ct );
+}
+
+template <class CType>
+void resetSingleton() 
+{
+	Singleton<CType>::reset();
+}
+
+#endif // SINGLETON_HPP_ 

@@ -1,0 +1,41 @@
+/*
+ * native
+ *
+ *  Created on: 16.6.2012
+ *      Author: akin
+ *      
+ *   Native platform functions.
+ *      
+ */
+
+#ifndef NATIVE_H_
+#define NATIVE_H_
+
+#include <stdtypes>
+#include <os>
+
+#ifdef OS_DETECTED
+# define USE_COMMON_NATIVELIB
+#endif
+
+class Time;
+class LocalTime;
+
+namespace native {
+
+// Logging..
+void log( const std::string& hint , const char *message );
+
+// Time
+void getTime( Time& time ); // UTC Time!
+void getTime( LocalTime& time ); // Local Time!
+
+// File I/O
+FILE *openFileRead( const std::string& path );
+FILE *openFileWrite( const std::string& path );
+void closeFile( FILE *file );
+bool readFile( const std::string& path , std::string& content );
+
+} // namespace native
+
+#endif // NATIVE_H_

@@ -1,0 +1,57 @@
+/*
+ * STDCOLOR_H_123_
+ *
+ *  Created on: 1.7.2012
+ *      Author: akin
+ *
+ *      defines standard color types.
+ */
+
+#ifndef STDCOLOR_H_123_
+#define STDCOLOR_H_123_
+
+#include <iostream>
+#include <glm/glm>
+
+namespace pixel {
+
+enum Format
+{
+	NONE = 		0x000000,
+	ALPHA8 = 	0x000001,
+	LUMINANCE = 0x000002,
+	INTENSITY = 0x000004,
+	RGB8 = 		0x000008,
+	RGBA8 = 	0x000010,
+	ARGB8 = 	0x000020,
+	RGBA12 = 	0x000040,
+	RGBA16 = 	0x000080,
+	RGBA32 = 	0x000100,
+	RGBA32F = 	0x000200,
+	RGB565 = 	0x000400,
+	RGBA4 = 	0x000800,
+	RGBA5551 = 	0x001000,
+	DEPTH8 = 	0x002000,
+	DEPTH16 = 	0x004000,
+	DEPTH24 = 	0x008000,
+	DEPTH32 = 	0x010000,
+	STENCIL8 = 	0x020000,
+	STENCIL16 =	0x040000,
+	STENCIL24 =	0x080000,
+	STENCIL32 =	0x100000,
+};
+
+const unsigned int depth = DEPTH8 | DEPTH16 | DEPTH24 | DEPTH32;
+const unsigned int stencil = STENCIL8 | STENCIL16 | STENCIL24 | STENCIL32;
+
+// Utility functions
+std::size_t getByteSize( Format mode );
+std::size_t getNumberOfElements( Format mode );
+unsigned int resolveGLMode( Format mode );
+
+Format resolveColorFormat( const glm::ivec4& colorcount );
+Format resolveDepthFormat( const int depthcount );
+
+}
+
+#endif // STDCOLOR_H_123_

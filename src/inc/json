@@ -1,0 +1,10 @@
+
+#ifndef HH_JSON_H
+#define HH_JSON_H
+
+#include <memory>
+
+#include <jsoncpp/json.h>
+#include <jsoncpp/jsonhelper.h>
+
+#endif

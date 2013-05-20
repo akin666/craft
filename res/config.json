@@ -1,0 +1,38 @@
+{
+	"core": {
+	    "screen": {
+	        "width": 800,
+	        "height": 600,
+	        "dpi": 96,
+	        "red": 8,
+	        "green": 8,
+	        "blue": 8,
+	        "alpha": 8,
+	        "stencil": 0,
+	        "depth": 32,
+	        "fullscreen": false,
+	        "title": "Graphical über application with some geometry on the screen v0.02b"
+	    },
+	    "audio": {
+	    }
+    },
+    "resources": {
+    	"sfx" : "res/1.wav",
+    	"Background" : "res/bg.jpg",
+    	"Bling" : "res/bling.jpg",
+    	"Blue" : "res/blue2.png",
+    	"Green" : "res/green2.png",
+    	"Purple" : "res/purple2.png",
+    	"Red" : "res/red2.png",
+    	"Yellow" : "res/yellow2.png",
+    	"numbers" : "res/numbers.png",
+    	"numbers-dimensions" : 16
+    },
+    "level": {
+    	"width" : 8,
+    	"height" : 8,
+    	"offset" : 42,
+    	"x" : 350,
+    	"y" : 125
+    }
+}

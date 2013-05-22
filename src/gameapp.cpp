@@ -27,6 +27,10 @@
 #include <resource/loaders/shaderloader.hpp>
 #include <resource/loaders/meshloader.hpp>
 
+#include <resource/types/dictionary.hpp>
+#include <resource/types/program.hpp>
+#include <resource/types/mesh.hpp>
+
 GameApp::GameApp()
 : width( 320 )
 , height( 200 )
@@ -110,22 +114,36 @@ bool GameApp::postInit()
 
 	// shaders..
 	resources.load( "res/simple.shader" );
-	resources.load( "res/texture.shader" );
 
 	// mesh data..
 	resources.load( "res/cow/cow.obj" );
 	resources.load( "res/grid.grd" );
 
-/*
+	// Connecting people..
+	resources.connect( "cow" , "res/cow/cow.obj" );
+	resources.connect( "grid" , "res/grid.grd" );
+	resources.connect( "shaders" , "res/simple.shader" );
+
+	// Lets fetch the dictionary for shaders..
+	auto dictptr = resources.get<resource::Dictionary>( "shaders" );
+
 	graphics::Program::Ptr simpleprogram;
-	resources.get( "simple" , simpleprogram );
-
 	graphics::Program::Ptr textureprogram;
-	resources.get( "texture" , textureprogram );
 
-	// Load obj
-	resources.loadMesh( "cow" , "res/cow/cow.obj" );
-	resources.loadMesh( "grid" , "res/grid.grd" );
+	if( dictptr )
+	{
+		auto simpleptr = dictptr->get<resource::Program>( "simple" );
+		auto textureptr = dictptr->get<resource::Program>( "texture" );
+
+		if( simpleptr && textureptr )
+		{
+			simpleprogram = simpleptr->get();
+			textureprogram = textureptr->get();
+		}
+	}
+
+	auto gridMesh = resources.get<resource::Mesh>("grid");
+	auto cowMesh = resources.get<resource::Mesh>("cow");
 
 	// Create grid.
 	grid = std::make_shared<MeshNode>();
@@ -134,16 +152,11 @@ bool GameApp::postInit()
 	gridMaterial->set( simpleprogram );
 	gridMaterial->set( Primitive::LINE );
 
-	Mesh::Ptr gridMesh;
-	resources.get( "grid" , gridMesh );
 	grid->set( gridMesh );
 	grid->set( gridMaterial );
 
 	// Create cow.
 	cow = std::make_shared<MeshNode>();
-
-	Mesh::Ptr cowMesh;
-	resources.get( "cow" , cowMesh );
 
 	Material::Ptr cowMaterial = std::make_shared<Material>();
 	cowMaterial->set( textureprogram );
@@ -180,7 +193,6 @@ bool GameApp::postInit()
 
 	// Camera:
 	root->addChild( cameraNode );
-*/
 	return true;
 }
 

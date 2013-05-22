@@ -11,7 +11,11 @@
 #define FILEDIRECTORY	0x0001
 #define FILEDEFAULT		FILENONE
 
-const std::string File::slash("/");
+#ifndef SYSTEM_SLASH
+# define SYSTEM_SLASH "/"
+#endif
+
+const std::string File::slash( SYSTEM_SLASH );
 
 File::File()
 : modified( 0 )

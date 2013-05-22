@@ -51,6 +51,9 @@ public:
 	std::string getPath() const;
 	size_t getBytesize() const;
 
+	void setError();
+	void reset();
+
 	void loadCacheStart();
 	void loadCacheComplete( bool success );
 	void loadRealizeStart();

@@ -6,6 +6,8 @@
  */
 
 #include "resource.hpp"
+#include <log>
+#include <cassert>
 
 namespace resource {
 
@@ -38,6 +40,23 @@ std::string Resource::getPath() const
 size_t Resource::getBytesize() const
 {
 	return this->bytesize;
+}
+
+void Resource::setError()
+{
+	state |= Error;
+
+	if( callback )
+	{
+		callback( *this );
+	}
+}
+
+void Resource::reset()
+{
+	LOG->warning("%s:%i TODO!!" , __FILE__ , __LINE__ );
+	assert( false );
+	// TODO!
 }
 
 void Resource::loadCacheStart()

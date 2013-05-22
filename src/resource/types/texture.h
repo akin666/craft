@@ -20,6 +20,8 @@ public:
 	typedef typename std::weak_ptr<Texture> WeakPtr;
 private:
 	graphics::Texture::Ptr texture;
+	glm::ivec2 dimensions;
+	pixel::Format format;
 public:
 	Texture( const std::string& path );
 	virtual ~Texture();

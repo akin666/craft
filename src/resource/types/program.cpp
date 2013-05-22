@@ -35,7 +35,7 @@ void Program::realize()
 
 	program->link();
 
-	if( !program->hasError() )
+	if( program->hasError() )
 	{
 		LOG->error("%s:%i failed to compile %s : %s." , __FILE__ , __LINE__, getPath().c_str(), program->getError().c_str() );
 		loadRealizeComplete( false );

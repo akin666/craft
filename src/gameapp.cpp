@@ -26,6 +26,7 @@
 
 #include <resource/loaders/shaderloader.hpp>
 #include <resource/loaders/meshloader.hpp>
+#include <resource/loaders/textureloader.hpp>
 
 #include <resource/types/dictionary.hpp>
 #include <resource/types/program.hpp>
@@ -111,9 +112,13 @@ bool GameApp::postInit()
 	// Add loaders..
 	resources.add<resource::ShaderLoader>();
 	resources.add<resource::MeshLoader>();
+	resources.add<resource::TextureLoader>();
 
 	// shaders..
 	resources.load( "res/simple.shader" );
+
+	// image data..
+	resources.load( "res/ice.png" );
 
 	// mesh data..
 	resources.load( "res/cow/cow.obj" );

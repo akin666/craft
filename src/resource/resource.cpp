@@ -75,6 +75,11 @@ void Resource::loadCacheComplete( bool success )
 	{
 		this->finalizeCached();
 	}
+	else
+	{
+		// set it to error.
+		state |= Error;
+	}
 
 	state &= ~Loading;
 

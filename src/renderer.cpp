@@ -47,7 +47,7 @@ void Renderer::render( const Camera& camera , const std::vector< MeshNode::Ptr >
 		model = meshnode->getModelMatrix();
 
 		const Material::Ptr& material = meshnode->getMaterial();
-		const Mesh::Ptr& mesh = meshnode->getMesh();
+		const resource::Mesh::Ptr& mesh = meshnode->getMesh();
 
 		// We have projection, view, mode matrixes.. and mesh..!
 		graphics::Program::Ptr program = material->getProgram();

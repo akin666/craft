@@ -42,7 +42,7 @@ public:
 	Resource( const std::string& path );
 	virtual ~Resource();
 
-	void setCallback( std::function<void (Resource&)>& cb );
+	void setCallback( std::function<void (Resource&)> cb );
 
 	std::string getPath() const;
 

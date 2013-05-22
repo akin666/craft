@@ -1,24 +1,22 @@
 /*
- * objoader.cpp
+ * objparser.hpp
  *
  *  Created on: 28.4.2013
  *      Author: akin
  */
 
-#include "objloader.hpp"
+
+#ifndef OBJPARSER_HPP_
+#define OBJPARSER_HPP_
+
 #include <stdtypes>
 #include <glm/glm>
 #include <iostream> // streams in general..
 #include <sstream>  // istringstream
 #include <native>
 
-OBJLoader::OBJLoader()
-{
-}
+#include <resource/types/mesh.hpp>
 
-OBJLoader::~OBJLoader()
-{
-}
 
 // !!! Code from
 // !!! http://stackoverflow.com/questions/14887012/object-loader-in-opengl
@@ -137,7 +135,7 @@ vector< Vertex > LoadOBJ( istream& in )
     return verts;
 }
 
-bool OBJLoader::load( const std::string& path , Mesh::Ptr& mesh )
+bool loadOBJFile( const std::string& path , resource::Mesh::Ptr& mesh )
 {
 	if( !(mesh) )
 	{
@@ -169,8 +167,7 @@ bool OBJLoader::load( const std::string& path , Mesh::Ptr& mesh )
 		++i;
 	}
 
-	// Bake the mesh.
-	mesh->bake();
-
 	return true;
 }
+
+#endif // OBJPARSER_HPP_

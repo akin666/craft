@@ -24,6 +24,9 @@
 # define GAME_CONFIG_SCREEN_PATH "core.screen"
 #endif
 
+#include <resource/loaders/shaderloader.hpp>
+#include <resource/loaders/meshloader.hpp>
+
 GameApp::GameApp()
 : width( 320 )
 , height( 200 )
@@ -101,10 +104,19 @@ bool GameApp::postInit()
 	// renderer
 	renderer.init();
 
+	// Add loaders..
+	resources.add<resource::ShaderLoader>();
+	resources.add<resource::MeshLoader>();
+
 	// shaders..
 	resources.load( "res/simple.shader" );
 	resources.load( "res/texture.shader" );
 
+	// mesh data..
+	resources.load( "res/cow/cow.obj" );
+	resources.load( "res/grid.grd" );
+
+/*
 	graphics::Program::Ptr simpleprogram;
 	resources.get( "simple" , simpleprogram );
 
@@ -168,7 +180,7 @@ bool GameApp::postInit()
 
 	// Camera:
 	root->addChild( cameraNode );
-
+*/
 	return true;
 }
 

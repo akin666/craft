@@ -14,12 +14,16 @@
 #include <graphics/graphicsbufferobject.hpp>
 #include <graphics/graphicsarrayobject.hpp>
 
-class Mesh
+#include <resource/resource.hpp>
+
+namespace resource {
+
+class Mesh : public Resource
 {
 public:
 	typedef typename std::shared_ptr<Mesh> Ptr;
 	typedef typename std::weak_ptr<Mesh> WeakPtr;
-
+public:
 	std::vector<glm::vec3> vertexes;
 	std::vector<glm::vec2> textureCoordinates;
 
@@ -31,13 +35,11 @@ public:
 	graphics::Attribute position;
 	graphics::Attribute coordinates;
 public:
-	Mesh();
-	~Mesh();
+	Mesh( const std::string& path );
+	virtual ~Mesh();
 
 	std::vector<glm::vec3>& accessVertexes();
 	std::vector<glm::vec2>& accessTextureCoordinates();
-
-	void bake();
 
 	const graphics::BufferObject& getVertexBuffer() const;
 	const graphics::BufferObject& getTextureCoordinateBuffer() const;
@@ -45,6 +47,11 @@ public:
 	const graphics::ArrayObject& getVao() const;
 
 	size_t getVertexCount() const;
+
+	virtual void realize();
+	virtual void unrealize();
 };
+
+} // resource
 
 #endif // MESH_HPP_

@@ -7,6 +7,9 @@
 
 #include "resourceloaderset.hpp"
 
+#include <log>
+#include <stringtools>
+
 namespace resource {
 
 LoaderSet::LoaderSet()
@@ -15,11 +18,13 @@ LoaderSet::LoaderSet()
 
 Resource::Ptr LoaderSet::load( const std::string& path )
 {
+	std::string extension = stringtools::fileExtension( path );
+
 	for( auto& loader : loaders )
 	{
-		if( loader->canLoad( path ) )
+		if( loader->canLoad( extension ) )
 		{
-			auto ptr = loader->load( path );
+			auto ptr = loader->load( path , extension );
 			if( ptr )
 			{
 				return ptr;

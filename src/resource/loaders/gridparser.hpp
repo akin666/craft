@@ -1,24 +1,26 @@
 /*
- * gridloader.cpp
+ * gridparser.hpp
  *
- *  Created on: 29.4.2013
+ *  Created on: 28.4.2013
  *      Author: akin
  */
 
-#include "gridloader.hpp"
+#ifndef GRIDPARSER_HPP_
+#define GRIDPARSER_HPP_
+
+#include <stdtypes>
+#include <glm/glm>
+#include <iostream> // streams in general..
+#include <sstream>  // istringstream
+#include <native>
+
+#include <resource/types/mesh.hpp>
+
 #include <json>
 
 #define GRID_PATH "grid"
 
-GridLoader::GridLoader()
-{
-}
-
-GridLoader::~GridLoader()
-{
-}
-
-bool GridLoader::load( const std::string& path , Mesh::Ptr& mesh )
+bool loadGRDFile( const std::string& path , resource::Mesh::Ptr& mesh )
 {
 	if( !(mesh) )
 	{
@@ -80,8 +82,7 @@ bool GridLoader::load( const std::string& path , Mesh::Ptr& mesh )
 		mVert.push_back( position2 );
 	}
 
-	// Bake the mesh.
-	mesh->bake();
-
 	return true;
 }
+
+#endif // GRIDPARSER_HPP_

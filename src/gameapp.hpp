@@ -13,7 +13,7 @@
 #include "camera.hpp"
 #include "renderer.hpp"
 #include "meshnode.hpp"
-#include "utils/resourcemanager.hpp"
+#include <resource/resourcemanager.hpp>
 
 class GameApp
 {
@@ -26,7 +26,7 @@ private:
 	Camera camera;
 	Renderer renderer;
 
-	ResourceManager resources;
+	resource::Manager resources;
 
 	float pos;
 	float rot;

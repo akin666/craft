@@ -21,8 +21,8 @@ public:
 	Loader();
 	virtual ~Loader();
 
-	virtual bool canLoad( const std::string& path );
-	virtual Resource::Ptr load( const std::string& path );
+	virtual bool canLoad( const std::string& extension );
+	virtual Resource::Ptr load( const std::string& path , const std::string& extension );
 };
 
 } // namespace resource

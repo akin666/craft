@@ -16,7 +16,7 @@ MeshNode::~MeshNode()
 {
 }
 
-void MeshNode::set( Mesh::Ptr& mesh )
+void MeshNode::set( resource::Mesh::Ptr& mesh )
 {
 	this->mesh = mesh;
 }
@@ -31,7 +31,7 @@ Node::Ptr& MeshNode::accessNode()
 	return node;
 }
 
-const Mesh::Ptr& MeshNode::getMesh() const
+const resource::Mesh::Ptr& MeshNode::getMesh() const
 {
 	return mesh;
 }

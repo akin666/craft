@@ -1,12 +1,21 @@
 /*
  * shaderloader.cpp
  *
- *  Created on: 29.4.2013
+ *  Created on: 22.5.2013
  *      Author: akin
  */
 
 #include "shaderloader.hpp"
+#include <resource/types/shader.hpp>
+#include <resource/types/program.hpp>
+#include <resource/types/dictionary.hpp>
+
 #include <json>
+
+#include <stdtypes>
+#include <log>
+#include <stringtools>
+#include <native>
 
 #define SHADER_PATH "shader"
 #define PROGRAM_PATH "program"
@@ -19,6 +28,11 @@
 #define COMMON_UNIFORM "uniform"
 #define COMMON_COMPONENT "component"
 
+namespace resource {
+
+bool loadTextFileShader( const std::string& path , const std::string& extension , Shader::Ptr& shaderptr );
+bool loadDictionaryShader( const std::string& path , const std::string& extension , Dictionary::Ptr& dictionaryptr );
+
 ShaderLoader::ShaderLoader()
 {
 }
@@ -27,8 +41,96 @@ ShaderLoader::~ShaderLoader()
 {
 }
 
-bool ShaderLoader::load( const std::string& path , ResourceDictionary< graphics::Shader >& shaders , ResourceDictionary< graphics::Program >& programs )
+bool ShaderLoader::canLoad( const std::string& extension )
 {
+	return  extension == "shader" ||
+			extension == "fs" ||
+			extension == "vs";
+}
+
+Resource::Ptr ShaderLoader::load( const std::string& path , const std::string& extension )
+{
+	if( extension == "vs" || extension == "fs" )
+	{
+		Shader::Ptr shaderptr = std::make_shared<Shader>( path );
+
+		shaderptr->loadCacheStart();
+
+		if( !loadTextFileShader( path , extension , shaderptr ) )
+		{
+			shaderptr->loadCacheComplete( false );
+
+			Resource::Ptr tmp;
+			return tmp;
+		}
+
+		shaderptr->loadCacheComplete( true );
+
+		// bake it.
+		shaderptr->realize();
+
+		return std::dynamic_pointer_cast<Resource>( shaderptr );
+	}
+	else if( extension == "shader" )
+	{
+		Dictionary::Ptr dictionaryptr = std::make_shared<Dictionary>( path );
+
+		dictionaryptr->loadCacheStart();
+
+		if( !loadDictionaryShader( path , extension , dictionaryptr ) )
+		{
+			dictionaryptr->loadCacheComplete( false );
+
+			Resource::Ptr tmp;
+			return tmp;
+		}
+
+		dictionaryptr->loadCacheComplete( true );
+
+		// bake it.
+		dictionaryptr->realize();
+
+		return std::dynamic_pointer_cast<Resource>( dictionaryptr );
+	}
+
+	Resource::Ptr tmp;
+	return tmp;
+}
+
+bool loadTextFileShader( const std::string& path , const std::string& extension , Shader::Ptr& shaderptr )
+{
+	if( extension == "vs" || extension == "fs" )
+	{
+		graphics::Shader::Type type = graphics::Shader::Vertex;
+		if( extension == "fs" )
+		{
+			type = graphics::Shader::Fragment;
+		}
+
+		std::string data;
+		if( !native::readFile( path , data ) )
+		{
+			LOG->error("%s:%i failed to read %s from disk." , __FILE__ , __LINE__, path.c_str() );
+			return false;
+		}
+
+		auto ptr = shaderptr->get();
+
+		ptr->setType( type );
+		ptr->set( data );
+
+		return true;
+	}
+	return false;
+}
+
+bool loadDictionaryShader( const std::string& path , const std::string& extension , Dictionary::Ptr& dictionaryptr )
+{
+	if( extension != "shader" )
+	{
+		return false;
+	}
+
 	auto jsonptr = std::make_shared<Json::Value>();
 	if( !Json::Helper::loadFromPath( jsonptr , path ) )
 	{
@@ -67,7 +169,7 @@ bool ShaderLoader::load( const std::string& path , ResourceDictionary< graphics:
 			else
 			{
 				// override?
-				if( shaders.has( name ) )
+				if( dictionaryptr->has( name ) )
 				{
 					LOG->warning( "%s:%i shader with name %s already loaded." , __FILE__ , __LINE__ , name.c_str() );
 					continue;
@@ -81,27 +183,19 @@ bool ShaderLoader::load( const std::string& path , ResourceDictionary< graphics:
 					continue;
 				}
 
-				auto ptr = std::make_shared< graphics::Shader >();
-				ptr->setType( stype );
-				ptr->set( data );
+				auto ptr = std::make_shared< Shader >( name );
+				auto graphicsptr = ptr->get();
 
-				if( !ptr->initialize() )
-				{
-					LOG->error("%s:%i failed to init %s : %s." , __FILE__ , __LINE__, name.c_str(), ptr->getError().c_str() );
-					continue;
-				}
+				graphicsptr->setType( stype );
+				graphicsptr->set( data );
 
-				ptr->compile();
-
-				if( !ptr->compiled() )
-				{
-					LOG->error("%s:%i failed to compile %s : %s." , __FILE__ , __LINE__, name.c_str(), ptr->getError().c_str() );
-					continue;
-				}
+				ptr->realize();
 
 				if( ptr )
 				{
-					shaders.set( name , ptr );
+					auto resptr = std::dynamic_pointer_cast<Resource>( ptr );
+
+					dictionaryptr->add( name , resptr );
 				}
 			}
 		}
@@ -125,7 +219,7 @@ bool ShaderLoader::load( const std::string& path , ResourceDictionary< graphics:
 			}
 
 			// No override
-			if( programs.has( name ) )
+			if( dictionaryptr->has( name ) )
 			{
 				LOG->warning( "%s:%i shader program with name %s already loaded." , __FILE__ , __LINE__ , name.c_str() );
 				continue;
@@ -155,7 +249,10 @@ bool ShaderLoader::load( const std::string& path , ResourceDictionary< graphics:
 				continue;
 			}
 
-			auto ptr = std::make_shared< graphics::Program >();
+			auto resprogptr = std::make_shared< Program >( name );
+
+			auto ptr = resprogptr->get();
+
 			if( ptr->hasError() )
 			{
 				LOG->error("%s:%i shader program %s has error: %s." , __FILE__ , __LINE__, name.c_str(), ptr->getError().c_str() );
@@ -174,8 +271,8 @@ bool ShaderLoader::load( const std::string& path , ResourceDictionary< graphics:
 			for( const auto& shadername : set )
 			{
 				// fetch shader from shaders set.
-				graphics::Shader::Ptr shaderPtr;
-				shaders.get( shadername , shaderPtr );
+				auto resshader = dictionaryptr->get<Shader>( shadername );
+				auto shaderPtr = resshader->get();
 
 				if( !shaderPtr )
 				{
@@ -208,10 +305,14 @@ bool ShaderLoader::load( const std::string& path , ResourceDictionary< graphics:
 
 			if( ptr )
 			{
-				programs.set( name , ptr );
+				auto resptr = std::dynamic_pointer_cast<Resource>( resprogptr );
+
+				dictionaryptr->add( name , resptr );
 			}
 		}
 	}
 
 	return true;
 }
+
+} // namespace resource

@@ -19,7 +19,7 @@ Resource::~Resource()
 {
 }
 
-void Resource::setCallback( std::function<void (Resource&)>& cb )
+void Resource::setCallback( std::function<void (Resource&)> cb )
 {
 	callback = cb;
 }

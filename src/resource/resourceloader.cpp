@@ -17,12 +17,12 @@ Loader::~Loader()
 {
 }
 
-bool Loader::canLoad( const std::string& path )
+bool Loader::canLoad( const std::string& extension )
 {
 	return false;
 }
 
-Resource::Ptr Loader::load( const std::string& path )
+Resource::Ptr Loader::load( const std::string& path , const std::string& extension )
 {
 	Resource::Ptr tmp;
 	return tmp;

@@ -40,6 +40,8 @@ private:
 	std::function<void (Resource&)> callback;
 protected:
 	void setBytesize( size_t size );
+
+	virtual void finalizeCached() = 0;
 public:
 	Resource( const std::string& path );
 	virtual ~Resource();
@@ -60,7 +62,6 @@ public:
 	bool loading() const;
 	bool error() const;
 
-	virtual void finalizeCached() = 0;
 	virtual void realize() = 0;
 	virtual void unrealize() = 0;
 };

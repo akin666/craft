@@ -52,6 +52,11 @@ void Resource::loadCacheStart()
 
 void Resource::loadCacheComplete( bool success )
 {
+	if( success )
+	{
+		this->finalizeCached();
+	}
+
 	state &= ~Loading;
 
 	if( callback )

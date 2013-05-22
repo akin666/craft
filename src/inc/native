@@ -13,13 +13,26 @@
 
 #include <stdtypes>
 #include <os>
+#include <pixelformat>
 
 #ifdef OS_DETECTED
 # define USE_COMMON_NATIVELIB
 #endif
 
-class Time;
-class LocalTime;
+#include <time/time.hpp>
+#include <time/localtime.hpp>
+
+#include <file/file.hpp>
+
+#define FD_EMPTY -1
+
+class Folder
+{
+public:
+	static const std::string RESOURCES;
+	static const std::string DOCUMENTS;
+	static const std::string TEMP;
+};
 
 namespace native {
 
@@ -31,10 +44,23 @@ void getTime( Time& time ); // UTC Time!
 void getTime( LocalTime& time ); // Local Time!
 
 // File I/O
-FILE *openFileRead( const std::string& path );
-FILE *openFileWrite( const std::string& path );
+// Hint gives a clue where the lib wants to access ("temp" , "documents" , "resources")
+FILE *openFileRead( const std::string& hint , const std::string& path );
+FILE *openFileWrite( const std::string& hint , const std::string& path );
 void closeFile( FILE *file );
-bool readFile( const std::string& path , std::string& content );
+bool readFile( const std::string& hint , const std::string& path , std::string& content );
+
+// File information
+// returns true, if exists
+bool fileInfo( const std::string& hint , File& file );
+bool directoryListing( const std::string& hint , File& file , File::Set& set );
+
+// MMAP File I/O
+void *openMMAP( const std::string& hint , const std::string& path , int& totalSize , int& offset , int& fd , int requestedOffset = 0 , int requestedSize = 0 , unsigned int accessFlags = ACCESS_READ | ACCESS_WRITE );
+void closeMMAP( void *ptr , int size , int& fd );
+
+// Image streaming
+bool saveImageFile( const std::string& hint , const std::string& path , int width , int heigth , pixel::Format format , const void *pixels );
 
 } // namespace native
 

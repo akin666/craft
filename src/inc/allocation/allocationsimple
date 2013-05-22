@@ -1,0 +1,58 @@
+/*
+ * allocator
+ *
+ *  Created on: 16.6.2012
+ *      Author: akin
+ *
+ *      TODO!
+ */
+
+#ifndef ALLOCATIONSIMPLE_HPP_
+#define ALLOCATIONSIMPLE_HPP_
+
+#include <stdtypes>
+
+namespace allocation {
+
+template <class CDataType>
+class Simple
+{
+public:
+	Simple()
+	{
+	}
+	
+	~Simple()
+	{
+	}
+	
+	ducktype bool initialize()
+	{
+		return true;
+	}
+
+	ducktype CDataType *construct()
+	{
+		return new CDataType;
+	}
+
+	ducktype void destruct( CDataType* data )
+	{
+		delete data;
+	}
+
+	ducktype void add( size_t count )
+	{
+	}
+
+	ducktype void clear()
+	{
+	}
+
+	ducktype void sort()
+	{
+	}
+};
+
+} // namespace allocation
+#endif // ALLOCATIONSIMPLE_HPP_

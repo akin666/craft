@@ -108,7 +108,7 @@ bool loadTextFileShader( const std::string& path , const std::string& extension 
 		}
 
 		std::string data;
-		if( !native::readFile( path , data ) )
+		if( !native::readFile( Folder::RESOURCES , path , data ) )
 		{
 			LOG->error("%s:%i failed to read %s from disk." , __FILE__ , __LINE__, path.c_str() );
 			return false;

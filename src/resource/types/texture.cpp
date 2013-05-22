@@ -7,6 +7,7 @@
 
 #include "texture.h"
 #include <log>
+#include <stb_image.h>
 
 namespace resource {
 
@@ -32,6 +33,9 @@ void Texture::finalizeCached()
 void Texture::realize()
 {
 	loadRealizeStart();
+
+	//
+
 	loadRealizeComplete( true );
 }
 

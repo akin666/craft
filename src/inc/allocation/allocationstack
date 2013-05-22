@@ -1,0 +1,55 @@
+/*
+ * allocationstack.hpp
+ *
+ *  Created on: 9.12.2012
+ *      Author: akin
+ */
+
+#ifndef ALLOCATIONSTACK_HPP_
+#define ALLOCATIONSTACK_HPP_
+
+#include <stdtypes>
+
+namespace alloction {
+
+class Stack
+{
+public:
+	Stack()
+	{
+	}
+
+	~Stack()
+	{
+	}
+	
+	ducktype bool initialize()
+	{
+		return true;
+	}
+
+	ducktype CDataType *construct()
+	{
+		return new CDataType;
+	}
+
+	ducktype void destruct( CDataType* data )
+	{
+		delete data;
+	}
+
+	ducktype void add( size_t count )
+	{
+	}
+
+	ducktype void clear()
+	{
+	}
+
+	ducktype void sort()
+	{
+	}
+};
+
+} // namespace alloction
+#endif // ALLOCATIONSTACK_HPP_

@@ -1,0 +1,28 @@
+
+#ifndef MMAN_HEADER_THINGY
+#define MMAN_HEADER_THINGY
+
+#include <os>
+
+#ifndef OS_NOT_DETECTED
+# if defined(OS_WINDOWS)
+// Windowz!
+#  include <unistd.h>
+#  include <sys/types.h>
+#  include "mman-win32/mman.h"
+# else
+// Unixeh!
+#  include <unistd.h>
+#  include <sys/types.h>
+#  include <sys/mman.h>
+# endif
+#else
+# warning NO MANN NO OS_DETECTED
+#endif
+
+#include <sys/stat.h> 	// should be on every platform
+#include <iostream>		// standard
+
+int mmapResolvePage( int begin );
+
+#endif

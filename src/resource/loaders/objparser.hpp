@@ -143,7 +143,7 @@ bool loadOBJFile( const std::string& path , resource::Mesh::Ptr& mesh )
 	}
 
 	std::string data;
-	if( !native::readFile( path , data ) )
+	if( !native::readFile( Folder::RESOURCES , path , data ) )
 	{
 		return false;
 	}

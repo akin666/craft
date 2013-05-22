@@ -12,11 +12,17 @@ namespace resource {
 Resource::Resource( const std::string& path )
 : path( path )
 , state( None )
+, bytesize( 0 )
 {
 }
 
 Resource::~Resource()
 {
+}
+
+void Resource::setBytesize( size_t size )
+{
+	this->bytesize = size;
 }
 
 void Resource::setCallback( std::function<void (Resource&)> cb )
@@ -27,6 +33,11 @@ void Resource::setCallback( std::function<void (Resource&)> cb )
 std::string Resource::getPath() const
 {
 	return path;
+}
+
+size_t Resource::getBytesize() const
+{
+	return this->bytesize;
 }
 
 void Resource::loadCacheStart()

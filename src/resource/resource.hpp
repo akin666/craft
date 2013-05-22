@@ -35,9 +35,11 @@ public:
 private:
 	std::string path;
 	std::atomic<int> state;
+	size_t bytesize;
 
 	std::function<void (Resource&)> callback;
-
+protected:
+	void setBytesize( size_t size );
 public:
 	Resource( const std::string& path );
 	virtual ~Resource();
@@ -45,6 +47,7 @@ public:
 	void setCallback( std::function<void (Resource&)> cb );
 
 	std::string getPath() const;
+	size_t getBytesize() const;
 
 	void loadCacheStart();
 	void loadCacheComplete( bool success );
@@ -57,6 +60,7 @@ public:
 	bool loading() const;
 	bool error() const;
 
+	virtual void finalizeCached() = 0;
 	virtual void realize() = 0;
 	virtual void unrealize() = 0;
 };

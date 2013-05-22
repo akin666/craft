@@ -26,6 +26,7 @@ public:
 
 	graphics::Shader::Ptr get();
 
+	virtual void finalizeCached();
 	virtual void realize();
 	virtual void unrealize();
 };

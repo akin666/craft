@@ -24,9 +24,9 @@ public:
 	Dictionary( const std::string& path );
 	virtual ~Dictionary();
 
+	virtual void finalizeCached();
 	virtual void realize();
 	virtual void unrealize();
-
 public:
 	void add( const std::string& id , Resource::Ptr& ptr );
 

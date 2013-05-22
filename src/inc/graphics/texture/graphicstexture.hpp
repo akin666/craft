@@ -11,6 +11,7 @@
 #define GRAPHICSTEXTURE_H_
 
 #include <glm/glm>
+#include <stdtypes>
 #include <iostream>
 #include "../graphicscommon.hpp"
 
@@ -19,6 +20,9 @@ namespace graphics {
 class BufferObject;
 class Texture
 {
+public:
+	typedef typename std::shared_ptr<Texture> Ptr;
+	typedef typename std::weak_ptr<Texture> WeakPtr;
 private:
 	glm::ivec2 dimensions;
 	glm::ivec2 newDimensions;

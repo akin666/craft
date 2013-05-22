@@ -26,6 +26,7 @@ public:
 
 	graphics::Program::Ptr get();
 
+	virtual void finalizeCached();
 	virtual void realize();
 	virtual void unrealize();
 };

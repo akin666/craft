@@ -25,6 +25,10 @@ graphics::Shader::Ptr Shader::get()
 	return shader;
 }
 
+void Shader::finalizeCached()
+{
+}
+
 void Shader::realize()
 {
 	loadRealizeStart();

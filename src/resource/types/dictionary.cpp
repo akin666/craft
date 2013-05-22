@@ -19,6 +19,10 @@ Dictionary::~Dictionary()
 {
 }
 
+void Dictionary::finalizeCached()
+{
+}
+
 void Dictionary::realize()
 {
 	loadRealizeStart();

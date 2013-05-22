@@ -24,6 +24,10 @@ graphics::Program::Ptr Program::get()
 	return program;
 }
 
+void Program::finalizeCached()
+{
+}
+
 void Program::realize()
 {
 	loadRealizeStart();

@@ -51,6 +51,10 @@ size_t Mesh::getVertexCount() const
 	return vertexes.size();
 }
 
+void Mesh::finalizeCached()
+{
+}
+
 void Mesh::realize()
 {
 	loadRealizeStart();

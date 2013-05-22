@@ -48,6 +48,7 @@ public:
 
 	size_t getVertexCount() const;
 
+	virtual void finalizeCached();
 	virtual void realize();
 	virtual void unrealize();
 };

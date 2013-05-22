@@ -33,7 +33,7 @@ void Resource::loadCacheStart()
 {
 	state |= Cached & Loading;
 
-	if( !callback )
+	if( callback )
 	{
 		callback( *this );
 	}
@@ -43,7 +43,7 @@ void Resource::loadCacheComplete( bool success )
 {
 	state &= ~Loading;
 
-	if( !callback )
+	if( callback )
 	{
 		callback( *this );
 	}
@@ -53,7 +53,7 @@ void Resource::loadRealizeStart()
 {
 	state |= Realized & Loading;
 
-	if( !callback )
+	if( callback )
 	{
 		callback( *this );
 	}
@@ -63,7 +63,7 @@ void Resource::loadRealizeComplete( bool success )
 {
 	state &= ~Loading;
 
-	if( !callback )
+	if( callback )
 	{
 		callback( *this );
 	}

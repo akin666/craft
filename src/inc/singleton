@@ -17,7 +17,7 @@ template <class CType>
 class Singleton
 {
 public:
-	typedef std::shared_ptr<CType> Ptr;
+	typedef typename std::shared_ptr<CType> Ptr;
 private:
 	static std::mutex mutex;
 	static Ptr singleton;

@@ -16,7 +16,7 @@ template <typename Resource>
 class ResourceDictionary
 {
 public:
-	typedef std::shared_ptr<Resource> ResourcePtr;
+	typedef typename std::shared_ptr<Resource> ResourcePtr;
 private:
 	std::unordered_map< std::string , ResourcePtr > data;
 public:

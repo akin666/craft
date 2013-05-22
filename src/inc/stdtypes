@@ -75,7 +75,7 @@
 	typedef int64_t 	int64;
 
 	// unsigned types
-	typedef uint8_t		uint8;
+	typedef uint8_t	uint8;
 	typedef uint16_t	uint16;
 	typedef uint32_t	uint32;
 	typedef uint64_t 	uint64;
@@ -87,17 +87,17 @@
 #endif
 
 #ifndef SKIP_HELPER_TYPES
-	typedef int8		 	schar;
-	typedef uint8		 	uchar;
-	typedef int16		 	sshort;
-	typedef uint16		 	ushort;
-	typedef int32 			sint;
-	typedef uint32		 	uint;
-	typedef int64 			slong;
+	typedef int8		schar;
+	typedef uint8		uchar;
+	typedef int16		sshort;
+	typedef uint16		ushort;
+	typedef int32 		sint;
+	typedef uint32		uint;
+	typedef int64 		slong;
 # ifndef OS_LINUX
-	typedef uint64		 	ulong;
+	typedef uint64		ulong;
 # endif
-    typedef float32			vec;
+	typedef float32		vec;
 #endif
 
 // Codepoints
@@ -112,8 +112,8 @@ typedef uint32		 	BufferIndex;
 typedef uint64 			EntityID;
 
 // String types
-typedef std::string::size_type StringPos;
-typedef std::vector<std::string> StringSet;
+typedef typename std::string::size_type StringPos;
+typedef typename std::vector<std::string> StringSet;
 
 // Primitive types
 namespace Primitive

@@ -15,8 +15,8 @@ namespace graphics {
 class Shader
 {
 public:
-	typedef std::shared_ptr<Shader> Ptr;
-	typedef std::weak_ptr<Shader> WeakPtr;
+	typedef typename std::shared_ptr<Shader> Ptr;
+	typedef typename std::weak_ptr<Shader> WeakPtr;
 public:
 	enum Type
 	{

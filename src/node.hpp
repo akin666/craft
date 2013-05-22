@@ -14,8 +14,8 @@
 class Node
 {
 public:
-	typedef std::shared_ptr<Node> Ptr;
-	typedef std::weak_ptr<Node> WeakPtr;
+	typedef typename std::shared_ptr<Node> Ptr;
+	typedef typename std::weak_ptr<Node> WeakPtr;
 private:
 	glm::mat4 matrix;
 	glm::mat4 worldspace;

@@ -16,8 +16,8 @@
 class MeshNode
 {
 public:
-	typedef std::shared_ptr<MeshNode> Ptr;
-	typedef std::weak_ptr<MeshNode> WeakPtr;
+	typedef typename std::shared_ptr<MeshNode> Ptr;
+	typedef typename std::weak_ptr<MeshNode> WeakPtr;
 private:
 	Node::Ptr node;
 	Mesh::Ptr mesh;

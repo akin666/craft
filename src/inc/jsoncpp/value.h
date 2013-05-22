@@ -1064,7 +1064,7 @@ public: // overridden from ValueArrayAllocator
    };
 
 
-   typedef std::shared_ptr<Value> ValuePtr;
+   typedef typename std::shared_ptr<Value> ValuePtr;
 
 } // namespace Json
 

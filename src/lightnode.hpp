@@ -14,8 +14,8 @@
 class LightNode
 {
 public:
-	typedef std::shared_ptr<LightNode> Ptr;
-	typedef std::weak_ptr<LightNode> WeakPtr;
+	typedef typename std::shared_ptr<LightNode> Ptr;
+	typedef typename std::weak_ptr<LightNode> WeakPtr;
 private:
 	Node::Ptr node;
 public:

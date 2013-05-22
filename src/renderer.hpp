@@ -11,8 +11,13 @@
 #include "meshnode.hpp"
 #include "camera.hpp"
 
+#include <graphics/texture/graphicstextureunit.hpp>
+
 class Renderer
 {
+private:
+	graphics::TextureUnit diffuse;
+	graphics::TextureUnit normal;
 public:
 	Renderer();
 	~Renderer();

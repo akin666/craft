@@ -11,7 +11,7 @@
 #include <stdtypes>
 #include <stringtools>
 
-typedef std::map<std::string , int> CommandMap;
+typedef typename std::map<std::string , int> CommandMap;
 
 void populateStringSet( size_t argc , char *argv[] , StringSet& args , CommandMap& commands );
 

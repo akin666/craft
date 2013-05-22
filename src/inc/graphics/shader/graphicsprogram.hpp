@@ -18,8 +18,8 @@ namespace graphics {
 class Program
 {
 public:
-	typedef std::shared_ptr<Program> Ptr;
-	typedef std::weak_ptr<Program> WeakPtr;
+	typedef typename std::shared_ptr<Program> Ptr;
+	typedef typename std::weak_ptr<Program> WeakPtr;
 private:
 	uint id;
 	uint state;

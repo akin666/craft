@@ -17,8 +17,8 @@
 class Mesh
 {
 public:
-	typedef std::shared_ptr<Mesh> Ptr;
-	typedef std::weak_ptr<Mesh> WeakPtr;
+	typedef typename std::shared_ptr<Mesh> Ptr;
+	typedef typename std::weak_ptr<Mesh> WeakPtr;
 
 	std::vector<glm::vec3> vertexes;
 	std::vector<glm::vec2> textureCoordinates;

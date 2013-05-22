@@ -14,8 +14,8 @@
 class Scene
 {
 public:
-	typedef std::shared_ptr<Scene> Ptr;
-	typedef std::weak_ptr<Scene> WeakPtr;
+	typedef typename std::shared_ptr<Scene> Ptr;
+	typedef typename std::weak_ptr<Scene> WeakPtr;
 private:
 	Node::Ptr root;
 public:

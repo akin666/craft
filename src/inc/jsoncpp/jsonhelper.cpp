@@ -12,7 +12,7 @@
 namespace Json {
 namespace Helper {
 
-typedef std::string::size_type StringPos;
+typedef typename std::string::size_type StringPos;
 
 bool loadFromPath( ValuePtr& root , const std::string path )
 {

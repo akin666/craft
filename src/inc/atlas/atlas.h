@@ -42,7 +42,7 @@ protected:
 		signed int width;
 	};
 
-	typedef std::vector<Node> NodeSet;
+	typedef typename std::vector<Node> NodeSet;
 
 	signed int dimensionX;
 	signed int dimensionY;

@@ -9,6 +9,8 @@
 #include <stdgl>
 
 Renderer::Renderer()
+: diffuse( 0 )
+, normal( 0 )
 {
 }
 

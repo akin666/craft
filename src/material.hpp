@@ -14,8 +14,8 @@
 class Material
 {
 public:
-	typedef std::shared_ptr<Material> Ptr;
-	typedef std::weak_ptr<Material> WeakPtr;
+	typedef typename std::shared_ptr<Material> Ptr;
+	typedef typename std::weak_ptr<Material> WeakPtr;
 private:
 	graphics::Program::Ptr program;
 	Primitive::Type primitive;

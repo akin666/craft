@@ -15,8 +15,8 @@
 class Camera
 {
 public:
-	typedef std::shared_ptr<Camera> Ptr;
-	typedef std::weak_ptr<Camera> WeakPtr;
+	typedef typename std::shared_ptr<Camera> Ptr;
+	typedef typename std::weak_ptr<Camera> WeakPtr;
 private:
 	Node::Ptr node;
 

@@ -35,3 +35,13 @@ const graphics::Program::Ptr& Material::getProgram() const
 {
 	return program;
 }
+
+void Material::set( graphics::Texture::Ptr& texture )
+{
+	this->texture = texture;
+}
+
+const graphics::Texture::Ptr& Material::getTexture() const
+{
+	return texture;
+}

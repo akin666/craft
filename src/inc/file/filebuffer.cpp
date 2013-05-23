@@ -125,17 +125,23 @@ Buffer& Buffer::open()
 		throw std::runtime_error("Empty filename provided!");
 	}
 
-	int realOffset;
 	try
 	{
+		int realOffset;
+
 		root = native::openMMAP( Folder::RESOURCES , filename , realSize , realOffset , fd , offset , size , flags );
+
+		if( size < 1 )
+		{
+			size = realSize - realOffset;
+		}
+		buffer = root + ( realOffset - offset );
 	}
 	catch( const std::exception& e )
 	{
 		LOG->error( "%s:%i Failed (%s) ! %s" , __FILE__ , __LINE__ , filename.c_str() , e.what() );
 		throw std::runtime_error("File creation not allowed for less than 1 byte size!");
 	}
-	buffer = root + ( realOffset - offset );
 
     return *this;
 }

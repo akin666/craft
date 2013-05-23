@@ -236,6 +236,11 @@ void *openMMAP( const std::string& hint , const std::string& path , int& totalSi
 	{
 		mmapflags |= PROT_READ;
 		openflags |= O_RDONLY;
+
+		if( requestedSize < 1 )
+		{
+			requestedSize = st.st_size;
+		}
 	}
 	if( write )
 	{

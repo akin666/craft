@@ -97,8 +97,6 @@ void Texture::realize()
 			}
 		}
 
-		int components = 4;
-
 		stbi_uc *ptr = stbi_load_from_memory( (stbi_uc*)buffer.access() , buffer.getSize() , &dimensions.x , &dimensions.y , &resComponent , reqComponent );
 		if( ptr == nullptr )
 		{

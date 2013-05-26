@@ -8,9 +8,13 @@
 #ifndef MATERIAL_HPP_
 #define MATERIAL_HPP_
 
+#include <graphics/graphicspipeline.hpp>
+
 #include <stdtypes>
 #include <graphics/shader/graphicsprogram.hpp>
 #include <graphics/texture/graphicstexture.hpp>
+#include "camera.hpp"
+#include <graphics/shader/graphicsuniform.hpp>
 
 class Material
 {
@@ -19,8 +23,13 @@ public:
 	typedef typename std::weak_ptr<Material> WeakPtr;
 private:
 	graphics::Program::Ptr program;
-	graphics::Texture::Ptr texture;
+	std::vector< std::tuple< unsigned int , graphics::Texture::Ptr > > textures;
+
 	Primitive::Type primitive;
+
+	graphics::Uniform<glm::mat4> uprojection;
+	graphics::Uniform<glm::mat4> umodel;
+	graphics::Uniform<glm::mat4> uview;
 public:
 	Material();
 	~Material();
@@ -29,10 +38,9 @@ public:
 	Primitive::Type getPrimitive() const;
 
 	void set( graphics::Program::Ptr& program );
-	const graphics::Program::Ptr& getProgram() const;
+	void set( unsigned int unit , graphics::Texture::Ptr& texture );
 
-	void set( graphics::Texture::Ptr& texture );
-	const graphics::Texture::Ptr& getTexture() const;
+	void apply( graphics::Pipeline& pipeline , const Camera& camera , const glm::mat4& modelmatrix );
 };
 
 #endif // MATERIAL_HPP_

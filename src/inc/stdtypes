@@ -21,6 +21,7 @@
 #include <list>
 #include <vector>
 #include <map>
+#include <tuple> 	// std::make_tuple + tuples in general.
 
 #define ducktype /*just programming hint*/
 #define ducked //

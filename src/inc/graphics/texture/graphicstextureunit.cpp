@@ -13,6 +13,13 @@ namespace graphics {
 
 TextureUnit::TextureUnit( unsigned int unitID )
 : id( unitID )
+, boundTextureID( GL_NULL )
+{
+}
+
+TextureUnit::TextureUnit( const TextureUnit& other )
+: id( other.id )
+, boundTextureID( other.boundTextureID )
 {
 }
 
@@ -34,9 +41,15 @@ void TextureUnit::activate()
 
 void TextureUnit::bind( const Texture& texture )
 {
+	boundTextureID = texture.getID();
+	rebind();
+}
+
+void TextureUnit::rebind()
+{
 	GL_TEST_START()
 	glActiveTexture( GL_TEXTURE0 + id );
-	texture.bind();
+	glBindTexture( GL_TEXTURE_2D , boundTextureID );
 	GL_TEST_END()
 }
 

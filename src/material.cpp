@@ -29,19 +29,32 @@ Primitive::Type Material::getPrimitive() const
 void Material::set( graphics::Program::Ptr& program )
 {
 	this->program = program;
+
+	uprojection = program->getUniform<glm::mat4>( "projectionMatrix" );
+	umodel = program->getUniform<glm::mat4>( "modelMatrix" );
+	uview = program->getUniform<glm::mat4>( "viewMatrix" );
 }
 
-const graphics::Program::Ptr& Material::getProgram() const
+void Material::set( unsigned int unit , graphics::Texture::Ptr& texture )
 {
-	return program;
+	textures.push_back( std::make_tuple( unit , texture ) );
 }
 
-void Material::set( graphics::Texture::Ptr& texture )
+void Material::apply( graphics::Pipeline& pipeline , const Camera& camera , const glm::mat4& modelmatrix )
 {
-	this->texture = texture;
+	program->bind(); // bind program object.
+	// bind textures to textureunits.
+	for( auto& unittex : textures )
+	{
+		pipeline.bind( std::get<0>( unittex ) , *(std::get<1>( unittex )) );
+	}
+
+	// setup matrixes
+	uprojection.set( camera.getProjection() );
+	uprojection.commit();
+	umodel.set( modelmatrix );
+	umodel.commit();
+	uview.set( camera.getView() );
+	uview.commit();
 }
 
-const graphics::Texture::Ptr& Material::getTexture() const
-{
-	return texture;
-}

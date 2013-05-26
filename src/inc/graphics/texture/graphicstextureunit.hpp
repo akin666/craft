@@ -15,14 +15,17 @@ class TextureUnit
 {
 private:
 	unsigned int id;
+	unsigned int boundTextureID;
 public:
 	TextureUnit( unsigned int unitID = 0 );
+	TextureUnit( const TextureUnit& other );
 	~TextureUnit();
 
 	unsigned int getID() const;
 
 	void activate();
 	void bind( const Texture& texture );
+	void rebind();
 };
 
 } // namespace graphics

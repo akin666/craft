@@ -9,8 +9,6 @@
 #include <stdgl>
 
 Renderer::Renderer()
-: diffuse( 0 )
-, normal( 0 )
 {
 }
 
@@ -31,40 +29,18 @@ void Renderer::render( const Camera& camera , const std::vector< MeshNode::Ptr >
 	// Clear screen..
 	glClear( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT );
 
+	pipeline.bind();
+
 	// Camera contains projection & view matrix.
 	// MeshNode contains model matrix.
-	glm::mat4 projection = camera.getProjection();
-	glm::mat4 view = camera.getView();
-
-	glm::mat4 model;
-
-	graphics::Uniform<glm::mat4> uprojection;
-	graphics::Uniform<glm::mat4> umodel;
-	graphics::Uniform<glm::mat4> uview;
-
 	for( const auto& meshnode : viewset )
 	{
-		model = meshnode->getModelMatrix();
-
 		const Material::Ptr& material = meshnode->getMaterial();
 		const resource::Mesh::Ptr& mesh = meshnode->getMesh();
 
 		// We have projection, view, mode matrixes.. and mesh..!
-		graphics::Program::Ptr program = material->getProgram();
-		program->bind(); // bind program object.
-
+		material->apply( pipeline , camera , meshnode->getModelMatrix() );
 		mesh->getVao().bind(); // bind vao object.
-
-		uprojection = program->getUniform<glm::mat4>( "projectionMatrix" );
-		umodel = program->getUniform<glm::mat4>( "modelMatrix" );
-		uview = program->getUniform<glm::mat4>( "viewMatrix" );
-
-		uprojection.set( projection );
-		uprojection.commit();
-		umodel.set( model );
-		umodel.commit();
-		uview.set( view );
-		uview.commit();
 
 		GL_TEST_START()
 		switch( material->getPrimitive() )

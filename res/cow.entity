@@ -1,0 +1,14 @@
+{
+	"name" : "cow",
+	"graphics" : {
+	    "model": {
+	    	"path": "cow/cow.obj"
+	    },
+	    "material": {
+	    	"shader" : "texture",
+	    	"diffuse" : "cow/colorOpacityCow.png",
+	    	"bump" : "cow/colorOpacityCowBump.png",
+	    	"normal" : "cow/colorOpacityCowNorm.png"
+	    }
+	}
+}

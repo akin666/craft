@@ -7,3 +7,4 @@ This licensing only applies in cases where the license has not been mentioned sp
 
 For development in windows, it is recommended to use eclipse CDT + 
 http://nuwen.net/mingw.html 
++ freeglut

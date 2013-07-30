@@ -27,6 +27,7 @@ public:
 	: alloccount( basesize )
 	{
 		size_t objectSize = sizeof( CDataType );
+		size_t alignment = std::alignment_of<CDataType>();
 		alloccount = basesize / objectSize;
 	}
 

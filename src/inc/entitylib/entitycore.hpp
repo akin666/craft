@@ -121,16 +121,6 @@ template <class Property> void clear()
 }
 
 /**
- * Update some property, and all that is attached to it:
- *  entity::update<PhysicsProperty>( 666 );
- */
-template <class Property> void update( MilliSecond ms )
-{
-	auto propertyptr = get<Property>();
-	propertyptr->update( ms );
-}
-
-/**
  * Query some property, if it has an entity attached
  */
 template <class Property> void has( ID id )

@@ -28,8 +28,6 @@ public:
 
 	virtual void enable( bool state ) = 0;
 	virtual bool isEnabled() const = 0;
-
-	virtual void update( MilliSecond ms ) = 0;
 };
 
 } // namespace entity

@@ -1,0 +1,15 @@
+/*
+ * allocation
+ *
+ *  Created on: 30.7.2013
+ *      Author: akin
+ */
+
+#ifndef ALLOCATIONLIB
+#define ALLOCATIONLIB
+
+#include <allocationlib/allocationpool>
+#include <allocationlib/allocationsimple>
+#include <allocationlib/allocationstack>
+
+#endif // ALLOCATIONLIB

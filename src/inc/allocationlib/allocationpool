@@ -67,9 +67,12 @@ public:
 		allocs.push_back( data );
 		
 		long ptr = (long)data;
-		long offptr = ptr + (ptr % alignment);
+		if( (ptr % alignment != 0) )
+		{
+			ptr += ( alignment - (ptr % alignment) );
+		}
 		
-		CDataType *array = (CDataType*)offptr;
+		CDataType *array = (CDataType*)ptr;
 		
 		for( size_t i = 0 ; i < count ; ++i )
 		{

@@ -13,22 +13,17 @@
 
 namespace allocation {
 
-template <class CDataType , size_t basesize = 256 , size_t maxsize = 2048>
+template <class CDataType , size_t growth = 256>
 class Pool
 {
 private:
 	typedef std::vector<CDataType*> CDataTypeSet;
 
-	size_t alloccount;
 	CDataTypeSet frees;
-	CDataTypeSet allocs;
+	std::vector<char*> allocs;
 public:
 	Pool()
-	: alloccount( basesize )
 	{
-		size_t objectSize = sizeof( CDataType );
-		size_t alignment = std::alignment_of<CDataType>();
-		alloccount = basesize / objectSize;
 	}
 
 	~Pool()
@@ -46,28 +41,13 @@ public:
 	{
 		if( frees.size() < 1 )
 		{
-			add( alloccount );
-
-			// grow allocation count linearly to max.
-			// linearly grows the added amount of objects, until MAX is hit,
-			// whereafter the amount of objects added, stays the same, max.
-			size_t objectSize = sizeof( CDataType );
-			size_t maxim = maxsize / objectSize;
-			if( alloccount < maxim )
-			{
-				alloccount += basesize / objectSize;
-				if( alloccount > maxim )
-				{
-					alloccount = maxim;
-				}
-			}
+			add( growth );
 		}
 
 		CDataType *tmp = frees.back();
 		frees.pop_back();
 
-		tmp->CDataType( args... );
-		return tmp;
+		return new(tmp)CDataType( args... );
 	}
 
 	ducktype void destruct( CDataType *unit )
@@ -78,12 +58,23 @@ public:
 
 	ducktype void add( size_t count )
 	{
-		CDataType *array = new CDataType[ alloccount ];
-		for( size_t i = 0 ; i < alloccount ; ++i )
+		size_t size = sizeof( CDataType );
+		size_t alignment = std::alignment_of<CDataType>();
+		
+		size_t bytecount = count * size + alignment;
+		
+		char *data = new char[ bytecount ];
+		allocs.push_back( data );
+		
+		long ptr = (long)data;
+		long offptr = ptr + (ptr % alignment);
+		
+		CDataType *array = (CDataType*)offptr;
+		
+		for( size_t i = 0 ; i < count ; ++i )
 		{
 			frees.push_back( &array[i] );
 		}
-		allocs.push_back( array );
 	}
 
 	ducktype void clear()
@@ -94,8 +85,6 @@ public:
 			delete[] *iter;
 		}
 		allocs.clear();
-		size_t objectSize = sizeof( CDataType );
-		alloccount = basesize / objectSize;
 	}
 
 	ducktype void sort()

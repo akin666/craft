@@ -9,6 +9,7 @@
 #define ENTITYLIB
 
 #include <entitylib/entitycore.hpp>
+#include <entitylib/entitygroup.hpp>
 
 // EntityID id = entity::create();
 // entity::attach<MyProperty>( id );

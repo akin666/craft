@@ -1,39 +1,39 @@
 /*
- * meshnode.hpp
+ * draw.hpp
  *
- *  Created on: 28.4.2013
+ *  Created on: 30.7.2013
  *      Author: akin
  */
 
-#ifndef MESHNODE_HPP_
-#define MESHNODE_HPP_
+#ifndef DRAW_HPP_
+#define DRAW_HPP_
 
-#include "node.hpp"
 #include <resource/types/mesh.hpp>
 #include "material.hpp"
 #include <stdtypes>
+#include <entity>
 
-class MeshNode
+class Draw
 {
-public:
-	typedef typename std::shared_ptr<MeshNode> Ptr;
-	typedef typename std::weak_ptr<MeshNode> WeakPtr;
 private:
-	Node::Ptr node;
 	resource::Mesh::Ptr mesh;
 	Material::Ptr material;
+	EntityID id;
 public:
-	MeshNode();
-	~MeshNode();
+	Draw( EntityID id );
+	~Draw();
 
 	void set( resource::Mesh::Ptr& mesh );
 	void set( Material::Ptr& material );
 
-	Node::Ptr& accessNode();
 	const resource::Mesh::Ptr& getMesh() const;
 	const Material::Ptr& getMaterial() const;
 
 	const glm::mat4& getModelMatrix() const;
+
+	void reset();
 };
 
-#endif // MESHNODE_HPP_
+typedef entity::Group<Draw> DrawProperty;
+
+#endif // DRAW_HPP_

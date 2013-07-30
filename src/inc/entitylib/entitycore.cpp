@@ -9,6 +9,20 @@
 
 namespace entity {
 
+#define FIRST_ENTITY_ID 1000
+
+std::atomic<ID> current( FIRST_ENTITY_ID );
+
+ID create()
+{
+	return current++;
+}
+
+void destroy( ID id )
+{
+	getCore()->clear( id );
+}
+
 Core::Core()
 {
 }
@@ -72,6 +86,11 @@ void Core::clear( ID id )
 		(*ptriter)->detach( id );
 	}
 	data.erase( iter );
+}
+
+Core *getCore()
+{
+	return MiniSingleton<Core>::get();
 }
 
 } // namespace entity

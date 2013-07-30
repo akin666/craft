@@ -36,7 +36,7 @@ public:
 	}
 
 	template<typename... Args>
-	ducktype CDataType *construct()
+	ducktype CDataType *construct( Args... args )
 	{
 		auto *data = new CDataType( args... );
 		allocs.push_back( data );

@@ -40,7 +40,7 @@ void Material::set( unsigned int unit , graphics::Texture::Ptr& texture )
 	textures.push_back( std::make_tuple( unit , texture ) );
 }
 
-void Material::apply( graphics::Pipeline& pipeline , const Camera& camera , const glm::mat4& modelmatrix )
+void Material::apply( graphics::Pipeline& pipeline , const glm::mat4& projectionmatrix , const glm::mat4& viewmatrix , const glm::mat4& modelmatrix )
 {
 	program->bind(); // bind program object.
 	// bind textures to textureunits.
@@ -50,11 +50,11 @@ void Material::apply( graphics::Pipeline& pipeline , const Camera& camera , cons
 	}
 
 	// setup matrixes
-	uprojection.set( camera.getProjection() );
+	uprojection.set( projectionmatrix );
 	uprojection.commit();
 	umodel.set( modelmatrix );
 	umodel.commit();
-	uview.set( camera.getView() );
+	uview.set( viewmatrix );
 	uview.commit();
 }
 

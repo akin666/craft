@@ -6,19 +6,16 @@
  */
 
 #include "camera.hpp"
+#include "location.hpp"
+#include <log>
 
-Camera::Camera()
+Camera::Camera( EntityID id )
+: id( id )
 {
-	node = std::make_shared<Node>( "camera" );
 }
 
 Camera::~Camera()
 {
-}
-
-Node::Ptr& Camera::accessNode()
-{
-	return node;
 }
 
 glm::mat4& Camera::accessProjection()
@@ -33,5 +30,6 @@ glm::mat4 Camera::getProjection() const
 
 glm::mat4 Camera::getView() const
 {
-	return glm::inverse( node->getWorldSpaceMatrix() );
+	auto& location = entity::get<LocationProperty>()->get( id );
+	return glm::inverse( location.getWorldSpaceMatrix() );
 }

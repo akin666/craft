@@ -13,7 +13,6 @@
 #include <stdtypes>
 #include <graphics/shader/graphicsprogram.hpp>
 #include <graphics/texture/graphicstexture.hpp>
-#include "camera.hpp"
 #include <graphics/shader/graphicsuniform.hpp>
 
 class Material
@@ -40,7 +39,7 @@ public:
 	void set( graphics::Program::Ptr& program );
 	void set( unsigned int unit , graphics::Texture::Ptr& texture );
 
-	void apply( graphics::Pipeline& pipeline , const Camera& camera , const glm::mat4& modelmatrix );
+	void apply( graphics::Pipeline& pipeline , const glm::mat4& projectionmatrix , const glm::mat4& viewmatrix , const glm::mat4& modelmatrix );
 };
 
 #endif // MATERIAL_HPP_

@@ -12,8 +12,12 @@
 
 namespace alloction {
 
+template <class CDataType>
 class Stack
 {
+private:
+	typedef std::vector<CDataType*> CDataTypeSet;
+	CDataTypeSet allocs;
 public:
 	Stack()
 	{
@@ -30,7 +34,7 @@ public:
 	}
 
 	template<typename... Args>
-	ducktype CDataType *construct()
+	ducktype CDataType *construct( Args... args )
 	{
 		auto *data = new CDataType( args... );
 		allocs.push_back( data );

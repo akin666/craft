@@ -38,7 +38,7 @@ public:
 			return;
 		}
 
-		data[ id ] = allocator.construct();
+		data[ id ] = allocator.construct( id );
 	}
 
 	virtual void detach( ID id )
@@ -82,11 +82,11 @@ public:
 
 		if( iter != data.end() )
 		{
-			ptr = *(iter->second);
+			ptr = (iter->second);
 		}
 		else
 		{
-			ptr = allocator.construct();
+			ptr = allocator.construct( id );
 			data[ id ] = ptr;
 		}
 

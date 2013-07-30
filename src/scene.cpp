@@ -7,17 +7,21 @@
 
 #include "scene.hpp"
 #include <glm/glm>
+#include "properties/node.hpp"
+#include <entity>
 
 Scene::Scene()
+: root( 0 )
 {
-	root = std::make_shared<Node>( "root" );
+	root = entity::create();
 }
 
 Scene::~Scene()
 {
+	entity::destroy( root );
 }
 
-Node::Ptr& Scene::getRoot()
+EntityID Scene::getRoot()
 {
 	return root;
 }
@@ -29,5 +33,7 @@ void Scene::release()
 void Scene::traverse()
 {
 	glm::mat4 identity;
-	root->populateMatrix( identity );
+
+	auto& node = entity::get<NodeProperty>()->get( root );
+	node.populateMatrix( identity );
 }

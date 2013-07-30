@@ -32,9 +32,18 @@
 #include <resource/types/program.hpp>
 #include <resource/types/mesh.hpp>
 
+#include <entity>
+
+#include "properties/camera.hpp"
+#include "properties/draw.hpp"
+#include "properties/location.hpp"
+#include "properties/node.hpp"
+
 GameApp::GameApp()
 : width( 320 )
 , height( 200 )
+, cow( 0 )
+, grid( 0 )
 {
 }
 
@@ -151,60 +160,71 @@ bool GameApp::postInit()
 	auto cowMesh = resources.get<resource::Mesh>("cow");
 
 	// Create grid.
-	grid = std::make_shared<MeshNode>();
+	auto& griddraw = entity::get<DrawProperty>()->get( grid );
 
 	Material::Ptr gridMaterial = std::make_shared<Material>();
 	gridMaterial->set( simpleprogram );
 	gridMaterial->set( Primitive::LINE );
 
-	grid->set( gridMesh );
-	grid->set( gridMaterial );
+	griddraw.set( gridMesh );
+	griddraw.set( gridMaterial );
 
 	// Create cow.
-	cow = std::make_shared<MeshNode>();
+	auto& cowdraw = entity::get<DrawProperty>()->get( cow );
 
 	Material::Ptr cowMaterial = std::make_shared<Material>();
 	cowMaterial->set( textureprogram );
 	cowMaterial->set( Primitive::TRIANGLE );
 
-	cow->set( cowMesh );
-	cow->set( cowMaterial );
+	cowdraw.set( cowMesh );
+	cowdraw.set( cowMaterial );
 
 	// Camera:
+	auto& cameraCamera = entity::get<CameraProperty>()->get( camera );
 	float con = (float)width / (float)height;
-	camera.accessProjection() = glm::frustum( -con*0.5f , con*0.5f , -0.5f , 0.5f , 0.3f , 100.0f );
+	cameraCamera.accessProjection() = glm::frustum( -con*0.5f , con*0.5f , -0.5f , 0.5f , 0.3f , 100.0f );
 
 	// Position things..
-	Node::Ptr& cowNode = cow->accessNode();
-	Node::Ptr& cameraNode = camera.accessNode();
-	Node::Ptr& gridNode = grid->accessNode();
+	auto& cowLocation = entity::get<LocationProperty>()->get( cow );
+	auto& cameraLocation = entity::get<LocationProperty>()->get( camera );
+	auto& gridLocation = entity::get<LocationProperty>()->get( grid );
 
 	pos = -10.0f;
 	rot = 0.0f;
 
 	cameraPos.y = 1.0f;
 	cpos = 0;
-	cowNode->accessMatrix() = glm::rotate( glm::translate( glm::mat4() , glm::vec3( 0.0f , 0.0f , pos ) ), rot , glm::vec3( 0.0f , 1.0f , 0.0f ) );
-	cameraNode->accessMatrix() = glm::rotate( glm::translate( glm::mat4() , cameraPos ), 0.0f , glm::vec3( 0.0f , 1.0f , 0.0f ) );
+	cowLocation.accessMatrix() = glm::rotate( glm::translate( glm::mat4() , glm::vec3( 0.0f , 0.0f , pos ) ), rot , glm::vec3( 0.0f , 1.0f , 0.0f ) );
+	cameraLocation.accessMatrix() = glm::rotate( glm::translate( glm::mat4() , cameraPos ), 0.0f , glm::vec3( 0.0f , 1.0f , 0.0f ) );
 
 	// put cow under root node, camera too..
-	Node::Ptr& root = scene.getRoot();
+	EntityID root = scene.getRoot();
+
+	auto& rootNode = entity::get<NodeProperty>()->get( root );
+	auto& cowNode = entity::get<NodeProperty>()->get( cow );
+	auto& gridNode = entity::get<NodeProperty>()->get( grid );
+	auto& cameraNode = entity::get<NodeProperty>()->get( camera );
 
 	// Grid:
-	root->addChild( gridNode );
+	rootNode.addChild( gridNode );
 
 	// Cow:
-	root->addChild( cowNode );
+	rootNode.addChild( cowNode );
 
 	// Camera:
-	root->addChild( cameraNode );
+	rootNode.addChild( cameraNode );
+
 	return true;
 }
 
 void GameApp::windowClosing()
 {
-	cow.reset(); // kill cow.
-	grid.reset(); // kill grid.
+	auto& cowdraw = entity::get<DrawProperty>()->get( cow );
+	auto& griddraw = entity::get<DrawProperty>()->get( grid );
+
+	cowdraw.reset(); // kill cow.
+	griddraw.reset(); // kill grid.
+
 	resources.releaseAll();
 	renderer.release();
 	scene.release();
@@ -214,26 +234,31 @@ void GameApp::display()
 {
 	glClear( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT );
 
-	// Position things..
-	Node::Ptr& cowNode = cow->accessNode();
-	Node::Ptr& cameraNode = camera.accessNode();
+	auto& cowLocation = entity::get<LocationProperty>()->get( cow );
+	auto& cameraLocation = entity::get<LocationProperty>()->get( camera );
+	auto& gridLocation = entity::get<LocationProperty>()->get( grid );
 
 	//pos -= 0.005f;
 	rot += 5.0f;
-	cowNode->accessMatrix() = glm::rotate( glm::translate( glm::mat4() , glm::vec3( 0.0f , 0.0f , pos ) ), rot , glm::vec3( 0.0f , 1.0f , 0.0f ) );
+	cowLocation.accessMatrix() = glm::rotate( glm::translate( glm::mat4() , glm::vec3( 0.0f , 0.0f , pos ) ), rot , glm::vec3( 0.0f , 1.0f , 0.0f ) );
 
 	cpos += 0.05;
 	cameraPos.z = 5.0f + glm::sin( cpos ) * 5.0f;
 
-	cameraNode->accessMatrix() = glm::rotate( glm::translate( glm::mat4() , cameraPos ), 0.0f , glm::vec3( 0.0f , 1.0f , 0.0f ) );
+	cameraLocation.accessMatrix() = glm::rotate( glm::translate( glm::mat4() , cameraPos ), 0.0f , glm::vec3( 0.0f , 1.0f , 0.0f ) );
 
 	scene.traverse();
 
-	std::vector< MeshNode::Ptr > set;
-	set.push_back( cow );
-	set.push_back( grid );
+	auto& griddraw = entity::get<DrawProperty>()->get( grid );
+	auto& cowdraw = entity::get<DrawProperty>()->get( cow );
 
-	renderer.render( camera , set );
+	std::vector< Draw* > set;
+	set.push_back( &griddraw );
+	set.push_back( &cowdraw );
+
+	auto& cameraCamera = entity::get<CameraProperty>()->get( camera );
+
+	renderer.render( cameraCamera , set );
 
 	glutSwapBuffers();
 	glutPostRedisplay();

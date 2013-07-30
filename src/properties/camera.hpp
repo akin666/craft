@@ -11,26 +11,22 @@
 #include "node.hpp"
 #include <stdtypes>
 #include <glm/glm>
+#include <entity>
 
 class Camera
 {
-public:
-	typedef typename std::shared_ptr<Camera> Ptr;
-	typedef typename std::weak_ptr<Camera> WeakPtr;
 private:
-	Node::Ptr node;
-
+	EntityID id;
 	glm::mat4 projection;
 public:
-	Camera();
+	Camera( EntityID id );
 	~Camera();
 
-	Node::Ptr& accessNode();
-
 	glm::mat4& accessProjection();
-
 	glm::mat4 getProjection() const;
 	glm::mat4 getView() const;
 };
+
+typedef entity::Group<Camera> CameraProperty;
 
 #endif // CAMERA_HPP_

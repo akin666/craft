@@ -24,7 +24,7 @@ void Renderer::release()
 {
 }
 
-void Renderer::render( const Camera& camera , const std::vector< MeshNode::Ptr >& viewset )
+void Renderer::render( const Camera& camera , const std::vector< Draw* >& viewset )
 {
 	// Clear screen..
 	glClear( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT );
@@ -33,13 +33,14 @@ void Renderer::render( const Camera& camera , const std::vector< MeshNode::Ptr >
 
 	// Camera contains projection & view matrix.
 	// MeshNode contains model matrix.
-	for( const auto& meshnode : viewset )
+	for( const auto& drawiter : viewset )
 	{
-		const Material::Ptr& material = meshnode->getMaterial();
-		const resource::Mesh::Ptr& mesh = meshnode->getMesh();
+		Draw& draw = *drawiter;
+		const Material::Ptr& material = draw.getMaterial();
+		const resource::Mesh::Ptr& mesh = draw.getMesh();
 
 		// We have projection, view, mode matrixes.. and mesh..!
-		material->apply( pipeline , camera , meshnode->getModelMatrix() );
+		material->apply( pipeline , camera.getProjection() , camera.getView() , draw.getModelMatrix() );
 		mesh->getVao().bind(); // bind vao object.
 
 		GL_TEST_START()

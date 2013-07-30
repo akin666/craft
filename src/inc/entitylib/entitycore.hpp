@@ -73,10 +73,7 @@ template <class Property> Property *get()
 /**
  * Helper function to get Core.
  */
-Core *getCore()
-{
-	return MiniSingleton<Core>::get();
-}
+Core *getCore();
 
 /**
  * Attach some property to an entity:

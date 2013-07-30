@@ -9,20 +9,20 @@
 #define SCENE_HPP_
 
 #include <stdtypes>
-#include "node.hpp"
+#include <entity>
 
 class Scene
 {
 public:
 	typedef typename std::shared_ptr<Scene> Ptr;
 	typedef typename std::weak_ptr<Scene> WeakPtr;
-private:
-	Node::Ptr root;
+
+	EntityID root;
 public:
 	Scene();
 	~Scene();
 
-	Node::Ptr& getRoot();
+	EntityID getRoot();
 
 	void release();
 	void traverse();

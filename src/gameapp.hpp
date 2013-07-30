@@ -10,9 +10,7 @@
 
 #include <stdtypes>
 #include "scene.hpp"
-#include "camera.hpp"
 #include "renderer.hpp"
-#include "meshnode.hpp"
 #include <resource/resourcemanager.hpp>
 
 class GameApp
@@ -23,7 +21,6 @@ private:
 	std::string title;
 
 	Scene scene;
-	Camera camera;
 	Renderer renderer;
 
 	resource::Manager resources;
@@ -32,8 +29,11 @@ private:
 	float rot;
 	float cpos;
 	glm::vec3 cameraPos;
-	MeshNode::Ptr cow;
-	MeshNode::Ptr grid;
+
+	EntityID cow;
+	EntityID grid;
+
+	EntityID camera;
 public:
 	GameApp();
 	~GameApp();

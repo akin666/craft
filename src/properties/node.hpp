@@ -10,7 +10,35 @@
 
 #include <stdtypes>
 #include <glm/glm>
+#include <entity>
 
+class Node
+{
+private:
+	EntityID id;
+	Node *parent;
+	std::vector< Node * > childs;
+	std::string name;
+
+	void detachChild( Node *child );
+public:
+	Node( EntityID id );
+	~Node();
+
+	void addChild( const Node& another );
+	void detach();
+
+	void clearChildren();
+
+	std::string getName() const;
+	void setName( const std::string& name );
+
+	void populateMatrix( const glm::mat4& matrix );
+};
+
+typedef entity::Group<Node> NodeProperty;
+
+/*
 class Node
 {
 public:
@@ -39,5 +67,6 @@ public:
 
 	void populateMatrix( const glm::mat4& matrix );
 };
+*/
 
 #endif // NODE_HPP_

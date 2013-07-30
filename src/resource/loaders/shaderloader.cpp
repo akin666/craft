@@ -252,16 +252,9 @@ bool loadDictionaryShader( const std::string& path , const std::string& extensio
 			auto resprogptr = std::make_shared< Program >( name );
 
 			auto ptr = resprogptr->get();
-
-			if( ptr->hasError() )
-			{
-				LOG->error("%s:%i shader program %s has error: %s." , __FILE__ , __LINE__, name.c_str(), ptr->getError().c_str() );
-				continue;
-			}
-
 			ptr->initialize();
 
-			if( ptr->hasError() )
+			if( !ptr->initialized() )
 			{
 				LOG->error("%s:%i shader program %s has error: %s." , __FILE__ , __LINE__, name.c_str(), ptr->getError().c_str() );
 				continue;
@@ -289,15 +282,9 @@ bool loadDictionaryShader( const std::string& path , const std::string& extensio
 				continue;
 			}
 
-			if( ptr->hasError() )
-			{
-				LOG->error("%s:%i shader program %s has error: %s." , __FILE__ , __LINE__, name.c_str(), ptr->getError().c_str() );
-				continue;
-			}
-
 			ptr->link();
 
-			if( ptr->hasError() )
+			if( !ptr->linked() )
 			{
 				LOG->error("%s:%i shader program %s has error: %s." , __FILE__ , __LINE__, name.c_str(), ptr->getError().c_str() );
 				continue;

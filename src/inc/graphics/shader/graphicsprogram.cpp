@@ -168,11 +168,11 @@ bool Program::hasError() const
 	}
 
 	GL_TEST_START()
-	GLint loglen = 0;
-	glGetProgramiv( id , GL_INFO_LOG_LENGTH , &loglen );
+	GLint tmp;
+	glGetProgramiv( id , GL_LINK_STATUS , &tmp );
 	GL_TEST_END()
 
-	return loglen > 1;
+	return tmp != GL_TRUE;
 }
 
 std::string Program::getError() const
@@ -181,7 +181,6 @@ std::string Program::getError() const
 	{
 		return "Program not initialized.";
 	}
-
 
 	GL_TEST_START()
 	GLint loglen = 0;

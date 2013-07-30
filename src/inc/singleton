@@ -63,8 +63,7 @@ public:
 		std::lock_guard<std::mutex> lock(mutex);
 		if( !singleton ) 
 		{
-			Ptr tmp( new CType );
-			singleton = tmp;
+			singleton = std::make_shared<CType>();
 		}
 		return singleton;
 	}

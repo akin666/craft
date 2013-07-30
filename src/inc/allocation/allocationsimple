@@ -31,9 +31,10 @@ public:
 		return true;
 	}
 
-	ducktype CDataType *construct()
+	template<typename... Args>
+	ducktype CDataType *construct( Args... args )
 	{
-		return new CDataType;
+		return new CDataType( args... );
 	}
 
 	ducktype void destruct( CDataType* data )

@@ -40,7 +40,8 @@ public:
 		return true;
 	}
 
-	ducktype CDataType *construct()
+	template<typename... Args>
+	ducktype CDataType *construct( Args... args )
 	{
 		if( frees.size() < 1 )
 		{
@@ -64,13 +65,13 @@ public:
 		CDataType *tmp = frees.back();
 		frees.pop_back();
 
-		tmp->constructor();
+		tmp->CDataType( args... );
 		return tmp;
 	}
 
 	ducktype void destruct( CDataType *unit )
 	{
-		unit->destructor();
+		unit->~CDataType();
 		frees.push_back( unit );
 	}
 

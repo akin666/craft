@@ -19,7 +19,7 @@ Node::~Node()
 {
 }
 
-void Node::addChild( const Node& another )
+void Node::addChild( Node& another )
 {
 	if( another.parent != nullptr )
 	{
@@ -35,6 +35,8 @@ void Node::addChild( const Node& another )
 			return;
 		}
 	}
+	another.parent = this;
+	childs.push_back( &another );
 }
 
 void Node::detachChild( Node *child )

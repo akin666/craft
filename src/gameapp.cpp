@@ -42,8 +42,9 @@
 GameApp::GameApp()
 : width( 320 )
 , height( 200 )
-, cow( 0 )
-, grid( 0 )
+, cow( entity::create() )
+, grid( entity::create() )
+, camera( entity::create() )
 {
 }
 

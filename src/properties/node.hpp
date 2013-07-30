@@ -25,7 +25,7 @@ public:
 	Node( EntityID id );
 	~Node();
 
-	void addChild( const Node& another );
+	void addChild( Node& another );
 	void detach();
 
 	void clearChildren();

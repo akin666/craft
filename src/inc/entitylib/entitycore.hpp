@@ -17,9 +17,13 @@ namespace entity {
 typedef EntityID ID;
 
 /**
- * ID Creation & destruction
+ * Entity Creation
  */
 ID create();
+
+/**
+ * Entity destruction
+ */
 void destroy( ID id );
 
 /**

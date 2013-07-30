@@ -10,8 +10,6 @@
 
 #include "time.hpp"
 
-namespace time {
-
 class Duration
 {
 protected:
@@ -34,7 +32,5 @@ public:
 
 	void setup( PreciseTime begin , PreciseTime length , const std::string& name );
 };
-
-} // time
 
 #endif // DURATION_HPP_ 

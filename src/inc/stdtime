@@ -4,7 +4,6 @@
 
 #include <time/time.hpp>
 #include <time/localtime.hpp>
-#include <time/timer.hpp>
 #include <native>
 
 #endif // STDTIME_H_123_

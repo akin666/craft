@@ -9,28 +9,28 @@
 #include <native>
 
 LocalTime::LocalTime()
-: year( 0 ),
-  month( 0 ),
-  day( 0 ),
-  hour( 0 ),
-  minute( 0 ),
-  second( 0 ),
-  weekday( 0 ),
-  dayOfYear( 0 ),
-  timezone( 0 )
+: year( 0 )
+, month( 0 )
+, day( 0 )
+, hour( 0 )
+, minute( 0 )
+, second( 0 )
+, weekday( 0 )
+, dayOfYear( 0 )
+, timezone( 0 )
 {
 }
 
 LocalTime::LocalTime(const LocalTime & other)
-: year( other.year ),
-  month( other.month ),
-  day( other.day ),
-  hour( other.hour ),
-  minute( other.minute ),
-  second( other.second ),
-  weekday( other.weekday ),
-  dayOfYear( other.dayOfYear ),
-  timezone( other.timezone )
+: year( other.year )
+, month( other.month )
+, day( other.day )
+, hour( other.hour )
+, minute( other.minute )
+, second( other.second )
+, weekday( other.weekday )
+, dayOfYear( other.dayOfYear )
+, timezone( other.timezone )
 {
 }
 

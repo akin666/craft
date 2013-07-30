@@ -7,11 +7,9 @@
 
 #include "duration.hpp"
 
-namespace time {
-
 Duration::Duration()
-: begin( 0 ),
-  length( 0 )
+: begin( 0 )
+, length( 0 )
 {
 }
 
@@ -56,6 +54,4 @@ void Duration::setup( PreciseTime begin , PreciseTime length , const std::string
 	this->length = length;
 	this->name = name;
 }
-
-} // time
 

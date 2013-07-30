@@ -1,0 +1,18 @@
+/*
+ * entity
+ *
+ *  Created on: 30.7.2013
+ *      Author: akin
+ */
+
+#ifndef ENTITYLIB
+#define ENTITYLIB
+
+#include <entitylib/entitycore.hpp>
+
+// EntityID id = entity::create();
+// entity::attach<MyProperty>( id );
+// entity::get<MyProperty>( id ).mydata.x = 10;
+// entity::update<MyProperty>( 1000 );
+
+#endif // ENTITYLIB

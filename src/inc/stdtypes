@@ -20,6 +20,7 @@
 #include <memory>	// c++11 std::shared_ptr
 #include <list>
 #include <vector>
+#include <unordered_map>
 #include <map>
 #include <tuple> 	// std::make_tuple + tuples in general.
 

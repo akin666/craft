@@ -54,6 +54,7 @@ GameApp::~GameApp()
 
 void GameApp::keyboardInput(unsigned int button, int action, int x, int y)
 {
+	LOG->message("Keyboard click at %ix%i of %i action %i" , x , y , button , action );
 }
 
 void GameApp::mouseMoveInput(int x, int y)
@@ -290,12 +291,12 @@ int GameApp::getHeight() const
 
 int GameApp::getGLVersionMajor() const
 {
-	return 4;
+	return 3;
 }
 
 int GameApp::getGLVersionMinor() const
 {
-	return 0;
+	return 2;
 }
 
 std::string GameApp::getWindowTitle() const

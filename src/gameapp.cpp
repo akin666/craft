@@ -39,6 +39,8 @@
 #include "properties/location.hpp"
 #include "properties/node.hpp"
 
+#include <native>
+
 GameApp::GameApp()
 : width( 320 )
 , height( 200 )
@@ -114,6 +116,8 @@ void GameApp::resetDisplayVariables()
 
 bool GameApp::postInit()
 {
+	LOG->message("%s:%i GameAPP PostInit" , __FILE__ , __LINE__ );
+
 	// GL setups.
 	resetDisplayVariables();
 
@@ -216,6 +220,8 @@ bool GameApp::postInit()
 	// Camera:
 	rootNode.addChild( cameraNode );
 
+	native::getTime( current );
+
 	return true;
 }
 
@@ -234,6 +240,13 @@ void GameApp::windowClosing()
 
 void GameApp::display()
 {
+	Time prev = current;
+	native::getTime( current );
+
+	Time delta( current.us - prev.us );
+
+	FloatTime df = delta.toFloatTime();
+
 	glClear( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT );
 
 	auto& cowLocation = entity::get<LocationProperty>()->get( cow );
@@ -241,10 +254,10 @@ void GameApp::display()
 	auto& gridLocation = entity::get<LocationProperty>()->get( grid );
 
 	//pos -= 0.005f;
-	rot += 5.0f;
+	rot += 45.0f * df;
 	cowLocation.accessMatrix() = glm::rotate( glm::translate( glm::mat4() , glm::vec3( 0.0f , 0.0f , pos ) ), rot , glm::vec3( 0.0f , 1.0f , 0.0f ) );
 
-	cpos += 0.05;
+	cpos += 1.0 * df;
 	cameraPos.z = 5.0f + glm::sin( cpos ) * 5.0f;
 
 	cameraLocation.accessMatrix() = glm::rotate( glm::translate( glm::mat4() , cameraPos ), 0.0f , glm::vec3( 0.0f , 1.0f , 0.0f ) );

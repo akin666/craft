@@ -12,6 +12,7 @@
 #include "scene.hpp"
 #include "renderer.hpp"
 #include <resource/resourcemanager.hpp>
+#include <time/time.hpp>
 
 class GameApp
 {
@@ -24,6 +25,8 @@ private:
 	Renderer renderer;
 
 	resource::Manager resources;
+
+	Time current;
 
 	float pos;
 	float rot;

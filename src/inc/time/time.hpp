@@ -42,6 +42,8 @@ public:
 
 	Time()
 	: us(0) {}
+	Time( PreciseTime us )
+	: us(us) {}
 	Time( const Time& o )
 	: us(o.us) {}
 
@@ -66,6 +68,18 @@ public:
 	operator PreciseTime()
 	{
 		return us;
+	}
+
+	const Time& operator -=( const Time& o )
+	{
+		us -= o.us;
+		return *this;
+	}
+
+	const Time& operator +=( const Time& o )
+	{
+		us += o.us;
+		return *this;
 	}
 };
 

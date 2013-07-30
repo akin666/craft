@@ -27,6 +27,7 @@ typedef int32			Minute;
 typedef int32		 	Second;
 typedef int32 			MicroSecond;
 typedef int32 			MilliSecond;
+typedef int64 			NanoSecond;
 typedef int32		 	Tick;
 typedef int32			Timezone;
 

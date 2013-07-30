@@ -21,6 +21,7 @@ public:
 
 	~Stack()
 	{
+		clear();
 	}
 	
 	ducktype bool initialize()
@@ -31,14 +32,25 @@ public:
 	template<typename... Args>
 	ducktype CDataType *construct()
 	{
+		auto *data = new CDataType( args... );
+		allocs.push_back( data );
 		// data->CDataType( args... );
-		return new CDataType( args... );
+		return data;
 	}
 
 	ducktype void destruct( CDataType* data )
 	{
 		// data->~CDataType();
 		delete data;
+		
+		for( auto iter = allocs.begin() ; iter != allocs.end() ; ++iter )
+		{
+			if( data == *iter )
+			{
+				allocs.erase( iter );
+				return;
+			}
+		}
 	}
 
 	ducktype void add( size_t count )
@@ -47,6 +59,11 @@ public:
 
 	ducktype void clear()
 	{
+		for( auto iter = allocs.begin() ; iter != allocs.end() ; ++iter )
+		{
+			delete *iter;
+		}
+		allocs.clear();
 	}
 
 	ducktype void sort()

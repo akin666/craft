@@ -113,6 +113,10 @@ typedef uint8		 	UTF8;
 typedef uint32		 	BufferIndex;
 typedef uint64 			EntityID;
 
+typedef std::vector<uchar> ByteArray;
+typedef std::shared_ptr<ByteArray> SharedByteArray;
+typedef std::weak_ptr<ByteArray> WeakByteArray;
+
 // String types
 typedef typename std::string::size_type StringPos;
 typedef typename std::vector<std::string> StringSet;

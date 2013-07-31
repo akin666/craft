@@ -5,7 +5,7 @@
  *      Author: akin
  */
 
-#include "texture.h"
+#include "texture.hpp"
 #include <log>
 #include <stb_image.h>
 #include <file/filebuffer.hpp>

@@ -6,7 +6,7 @@
  */
 
 #include "textureloader.hpp"
-#include <resource/types/texture.h>
+#include <resource/types/texture.hpp>
 
 namespace resource {
 
@@ -38,16 +38,16 @@ Resource::Ptr TextureLoader::load( const std::string& path , const std::string& 
 		return tmp;
 	}
 
-	Texture::Ptr textureptr = std::make_shared<Texture>( path );
+	auto ptr = std::make_shared<Texture>( path );
 
 	// "load"
-	textureptr->loadCacheStart();
-	textureptr->loadCacheComplete( true );
+	ptr->loadCacheStart();
+	ptr->loadCacheComplete( true );
 
 	// Bake it "complete" TODO! remove realizing in loaders.
-	textureptr->realize();
+	ptr->realize();
 
-	return std::dynamic_pointer_cast<Resource>( textureptr );
+	return std::dynamic_pointer_cast<Resource>( ptr );
 }
 
 } // namespace resource

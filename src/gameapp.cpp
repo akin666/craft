@@ -27,6 +27,7 @@
 #include <resource/loaders/shaderloader.hpp>
 #include <resource/loaders/meshloader.hpp>
 #include <resource/loaders/textureloader.hpp>
+#include <resource/loaders/audioloader.hpp>
 
 #include <resource/types/dictionary.hpp>
 #include <resource/types/program.hpp>
@@ -118,6 +119,9 @@ bool GameApp::postInit()
 {
 	LOG->message("%s:%i GameAPP PostInit" , __FILE__ , __LINE__ );
 
+	// Audio
+	audioContext.intialize();
+
 	// GL setups.
 	resetDisplayVariables();
 
@@ -128,6 +132,7 @@ bool GameApp::postInit()
 	resources.add<resource::ShaderLoader>();
 	resources.add<resource::MeshLoader>();
 	resources.add<resource::TextureLoader>();
+	resources.add<resource::AudioLoader>();
 
 	// shaders..
 	resources.load( "res/simple.shader" );
@@ -138,6 +143,9 @@ bool GameApp::postInit()
 	// mesh data..
 	resources.load( "res/cow/cow.obj" );
 	resources.load( "res/grid.grd" );
+
+	// Audio data
+	resources.load( "res/test.ogg" );
 
 	// Connecting people..
 	resources.connect( "cow" , "res/cow/cow.obj" );

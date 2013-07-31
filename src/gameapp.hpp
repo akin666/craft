@@ -14,6 +14,8 @@
 #include <resource/resourcemanager.hpp>
 #include <time/time.hpp>
 
+#include <audio/audiocontext.hpp>
+
 class GameApp
 {
 private:
@@ -23,6 +25,8 @@ private:
 
 	Scene scene;
 	Renderer renderer;
+
+	audio::Context audioContext;
 
 	resource::Manager resources;
 

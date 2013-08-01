@@ -16,9 +16,9 @@
 namespace audio {
 
 Resource::Resource()
-: frequency( 0 )
-, audioBufferID( 0 )
+: audioBufferID( 0 )
 , duration( 0 )
+, frequency( 0 )
 , state( 0 )
 , channels( 0 )
 , bitsPerSample( 0 )

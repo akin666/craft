@@ -8,6 +8,7 @@
 
 #include <stdgl>
 #include "gameapp.hpp"
+#include <log>
 
 std::shared_ptr<GameApp> gameapplication;
 
@@ -55,6 +56,8 @@ void windowClosing()
 bool init( int argc , char *argv[] )
 {
 	gameapplication = std::make_shared<GameApp>();
+
+	LOG->message("Starting CRAFT");
 
 	if( !gameapplication->preInit( argc , argv ) )
 	{

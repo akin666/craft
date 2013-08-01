@@ -16,13 +16,12 @@
 namespace audio {
 
 Resource::Resource()
-: audioBufferID( 0 )
+: frequency( 0 )
+, audioBufferID( 0 )
 , duration( 0 )
 , state( 0 )
 , channels( 0 )
 , bitsPerSample( 0 )
-, samplesPerSecond( 0 )
-, extra( 0 )
 {
 }
 
@@ -57,6 +56,7 @@ bool Resource::makeEffect()
 	ByteArray unpacked;
 	int error = 0;
 	{
+		int endian = 0; // 0 for Little-Endian, 1 for Big-Endian
 		helpers::ByteArrayFile memoryfile( bytearray );
 
 		OggVorbis_File vf;
@@ -77,11 +77,10 @@ bool Resource::makeEffect()
 
 		channels = info->channels;
 		bitsPerSample = 16;
-		samplesPerSecond = info->rate;
+		frequency = info->rate;
 
 		int size = 4096 * bitsPerSample;
 		size_t position = 0;
-		int sec = 0;
 
 		int64 bytes = ov_pcm_total( &vf , -1 );
 
@@ -89,9 +88,10 @@ bool Resource::makeEffect()
 
 		unpacked.resize( bytes );
 		int64 ret = 1;
+		int bitstream = 0;
 		while( ret && position < bytes )
 		{
-			ret = ov_read( &vf , (char*)(&unpacked[position]) , size , 0 , 2 , 1 , &sec );
+			ret = ov_read( &vf , (char*)(&unpacked[position]) , size , endian , 2 , 1 , &bitstream );
 			position += ret;
 			if( bytes - position < size )
 			{
@@ -117,12 +117,12 @@ bool Resource::makeEffect()
 
 	// got bufferID
 	ALenum format = AL_FORMAT_MONO16;
-	if( channels == 2)
+	if( channels == 2 )
 	{
 		format = AL_FORMAT_STEREO16;
 	}
 
-	alBufferData( audioBufferID , format, &unpacked[0], static_cast < ALsizei > (unpacked.size()), samplesPerSecond );
+	alBufferData( audioBufferID , format, &unpacked[0], static_cast < ALsizei > (unpacked.size()), frequency );
 	if((error = alGetError()) != AL_NO_ERROR)
 	{
 		LOG->error("%s:%i AL Error %i" , __FILE__ , __LINE__ , error );

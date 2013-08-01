@@ -93,7 +93,8 @@ bool Player::set( Resource::Ptr& data )
 		return false;
 	}
 
-	alSourcei( sourceID , AL_BUFFER, data->getBufferID() );	int error = 0;
+	alSourcei( sourceID , AL_BUFFER, data->getBufferID() );
+	int error = 0;
 	if((error = alGetError()) != AL_NO_ERROR)
 	{
 		LOG->error("%s:%i AL Error %i" , __FILE__ , __LINE__ , error );

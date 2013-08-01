@@ -19,6 +19,8 @@ public:
 	typedef typename std::shared_ptr<Resource> Ptr;
 	typedef typename std::weak_ptr<Resource> WeakPtr;
 private:
+	int64 frequency; // rate
+
 	SharedByteArray bytearray;
 
 	uint audioBufferID;
@@ -26,8 +28,6 @@ private:
 	int32 state;
 	int16 channels;
 	int16 bitsPerSample;
-	int16 samplesPerSecond; // rate
-	int16 extra;
 public:
 	Resource();
 	virtual ~Resource();

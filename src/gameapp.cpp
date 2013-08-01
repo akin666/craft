@@ -118,8 +118,6 @@ void GameApp::resetDisplayVariables()
 
 bool GameApp::postInit()
 {
-	LOG->message("%s:%i GameAPP PostInit" , __FILE__ , __LINE__ );
-
 	// Audio setup
 	audioContext.intialize();
 

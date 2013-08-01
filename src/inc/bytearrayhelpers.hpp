@@ -24,8 +24,8 @@ public:
 	}
 
 	ByteArrayFile( SharedByteArray& data )
-	: read( 0 )
-	, data( data )
+	: data( data )
+	, read( 0 )
 	{
 	}
 };

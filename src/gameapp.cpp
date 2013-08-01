@@ -32,6 +32,7 @@
 #include <resource/types/dictionary.hpp>
 #include <resource/types/program.hpp>
 #include <resource/types/mesh.hpp>
+#include <resource/types/audio.hpp>
 
 #include <entity>
 
@@ -119,7 +120,7 @@ bool GameApp::postInit()
 {
 	LOG->message("%s:%i GameAPP PostInit" , __FILE__ , __LINE__ );
 
-	// Audio
+	// Audio setup
 	audioContext.intialize();
 
 	// GL setups.
@@ -151,6 +152,7 @@ bool GameApp::postInit()
 	resources.connect( "cow" , "res/cow/cow.obj" );
 	resources.connect( "grid" , "res/grid.grd" );
 	resources.connect( "shaders" , "res/simple.shader" );
+	resources.connect( "audio-effect" , "res/test.ogg" );
 
 	// Lets fetch the dictionary for shaders..
 	auto dictptr = resources.get<resource::Dictionary>( "shaders" );
@@ -170,6 +172,7 @@ bool GameApp::postInit()
 		}
 	}
 
+	// Fetch meshes.
 	auto gridMesh = resources.get<resource::Mesh>("grid");
 	auto cowMesh = resources.get<resource::Mesh>("cow");
 
@@ -227,6 +230,17 @@ bool GameApp::postInit()
 
 	// Camera:
 	rootNode.addChild( cameraNode );
+
+	// Audio tes
+	audioPlayer = audioContext.createPlayer();
+	audioPlayer->initialize();
+
+	auto effect_test = resources.get<resource::Audio>("audio-effect");
+	auto effect_res = effect_test->get();
+	if( audioPlayer->set( effect_res ) )
+	{
+		audioPlayer->play();
+	}
 
 	native::getTime( current );
 

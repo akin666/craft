@@ -27,6 +27,7 @@ private:
 	Renderer renderer;
 
 	audio::Context audioContext;
+	audio::Player::Ptr audioPlayer;
 
 	resource::Manager resources;
 

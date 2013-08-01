@@ -24,6 +24,8 @@ public:
 	Audio( const std::string& path );
 	virtual ~Audio();
 
+	audio::Resource::Ptr get();
+
 	virtual void finalizeCached();
 	virtual void realize();
 	virtual void unrealize();

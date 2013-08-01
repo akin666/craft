@@ -21,6 +21,11 @@ Audio::~Audio()
 {
 }
 
+audio::Resource::Ptr Audio::get()
+{
+	return resource;
+}
+
 void Audio::finalizeCached()
 {
 	// take a quick peek at the audio, determine size & format.

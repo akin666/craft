@@ -78,12 +78,18 @@ bool Player::set( Resource::Ptr& data )
 {
 	if( sourceID == 0 )
 	{
+		LOG->error("%s:%i Audio player is not initialized." , __FILE__ , __LINE__ );
+		return false;
+	}
+	if( !data )
+	{
+		LOG->error("%s:%i Data given to Audio player is not set." , __FILE__ , __LINE__ );
 		return false;
 	}
 
 	if( !data->isEffect() )
 	{
-		LOG->error("%s:%i Audio Player Currently supporting only effects" , __FILE__ , __LINE__ );
+		LOG->error("%s:%i Audio Player Currently supporting only effects." , __FILE__ , __LINE__ );
 		return false;
 	}
 

@@ -73,9 +73,9 @@ void Listener::setVelocity( const glm::vec4& velocity )
 	}
 }
 
-void Listener::setGain( float gain )
+void Listener::setVolume( float volume )
 {
-	alListenerf( AL_GAIN , gain );
+	alListenerf( AL_GAIN , volume );
 	if ((error = alGetError()) != AL_NO_ERROR)
 	{
 		LOG->error("%s:%i AL Error %i" , __FILE__ , __LINE__ , error );

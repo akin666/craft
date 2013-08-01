@@ -104,13 +104,43 @@ bool Player::set( Resource::Ptr& data )
 	return true;
 }
 
+void Player::setVolume( float volume )
+{
+	if( sourceID == 0 )
+	{
+		LOG->error("%s:%i Audio player is not initialized." , __FILE__ , __LINE__ );
+		return;
+	}
+	alSourcef( sourceID , AL_GAIN , volume );
+	int error = 0;
+	if((error = alGetError()) != AL_NO_ERROR)
+	{
+		LOG->error("%s:%i AL Error %i" , __FILE__ , __LINE__ , error );
+	}
+}
+
+void Player::setPitch( float pitch )
+{
+	if( sourceID == 0 )
+	{
+		LOG->error("%s:%i Audio player is not initialized." , __FILE__ , __LINE__ );
+		return;
+	}
+	alSourcef( sourceID , AL_PITCH , pitch );
+	int error = 0;
+	if((error = alGetError()) != AL_NO_ERROR)
+	{
+		LOG->error("%s:%i AL Error %i" , __FILE__ , __LINE__ , error );
+	}
+}
+
 void Player::stop()
 {
 	if( sourceID == 0 )
 	{
+		LOG->error("%s:%i Audio player is not initialized." , __FILE__ , __LINE__ );
 		return;
 	}
-
 	alSourceStop( sourceID );
 	int error = 0;
 	if((error = alGetError()) != AL_NO_ERROR)
@@ -124,6 +154,7 @@ void Player::pause()
 {
 	if( sourceID == 0 )
 	{
+		LOG->error("%s:%i Audio player is not initialized." , __FILE__ , __LINE__ );
 		return;
 	}
 
@@ -140,6 +171,7 @@ void Player::play()
 {
 	if( sourceID == 0 )
 	{
+		LOG->error("%s:%i Audio player is not initialized." , __FILE__ , __LINE__ );
 		return;
 	}
 

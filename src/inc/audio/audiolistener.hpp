@@ -26,7 +26,7 @@ public:
 
 	void setPosition( const glm::mat4& position );
 	void setVelocity( const glm::vec4& velocity );
-	void setGain( float gain );
+	void setVolume( float volume );
 };
 
 } // namespace audio

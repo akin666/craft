@@ -36,6 +36,9 @@ public:
 	void setPosition( glm::mat4& matrix );
 	bool set( Resource::Ptr& data );
 
+	void setVolume( float volume );
+	void setPitch( float pitch );
+
 	void stop();
 	void pause();
 	void play();

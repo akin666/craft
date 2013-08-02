@@ -146,12 +146,14 @@ bool GameApp::postInit()
 
 	// Audio data
 	resources.load( "res/test.ogg" );
+//	resources.load( "res/Hydrate-Kenny_Beltrey.ogg" );
 
 	// Connecting people..
 	resources.connect( "cow" , "res/cow/cow.obj" );
 	resources.connect( "grid" , "res/grid.grd" );
 	resources.connect( "shaders" , "res/simple.shader" );
 	resources.connect( "audio-effect" , "res/test.ogg" );
+//	resources.connect( "audio-stream" , "res/Hydrate-Kenny_Beltrey.ogg" );
 
 	// Lets fetch the dictionary for shaders..
 	auto dictptr = resources.get<resource::Dictionary>( "shaders" );
@@ -230,7 +232,7 @@ bool GameApp::postInit()
 	// Camera:
 	rootNode.addChild( cameraNode );
 
-	// Audio tes
+	// Audio FX test
 	audioPlayer = audioContext->createPlayer();
 	audioPlayer->initialize();
 
@@ -240,6 +242,18 @@ bool GameApp::postInit()
 	{
 		audioPlayer->play();
 	}
+	/*
+	// Audio STREAM test
+	audioPlayerStream = audioContext->createPlayer();
+	audioPlayerStream->initialize();
+
+	auto stream_test = resources.get<resource::Audio>("audio-stream");
+	auto stream_res = stream_test->get();
+	if( audioPlayerStream->set( stream_res ) )
+	{
+		audioPlayerStream->play();
+	}
+	/**/
 
 	native::getTime( current );
 

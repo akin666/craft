@@ -28,6 +28,7 @@ private:
 
 	audio::Context::Ptr audioContext;
 	audio::Player::Ptr audioPlayer;
+	audio::Player::Ptr audioPlayerStream;
 
 	resource::Manager resources;
 

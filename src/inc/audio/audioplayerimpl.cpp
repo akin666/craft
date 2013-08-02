@@ -274,8 +274,6 @@ void PlayerImpl::play()
 			queue( i );
 		}
 
-
-		LOG->error("%s:%i Audio Player Currently supporting only effects." , __FILE__ , __LINE__ );
 		return;
 	}
 	else if( resource->isEffect() )

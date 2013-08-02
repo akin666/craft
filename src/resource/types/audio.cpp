@@ -60,9 +60,20 @@ void Audio::realize()
 			throw std::runtime_error("Failed to decode the audio!");
 		}
 
-		if( !resource->makeEffect() )
+		// Todo, over 100k things are streams
+		if( resource->getBytes() > 100 * 1024 )
 		{
-			throw std::runtime_error("Failed to make effect of the audio!");
+			if( !resource->makeStream() )
+			{
+				throw std::runtime_error("Failed to make stream of the audio!");
+			}
+		}
+		else
+		{
+			if( !resource->makeEffect() )
+			{
+				throw std::runtime_error("Failed to make effect of the audio!");
+			}
 		}
 /*
 		// format, dimensions, all is set, image is in buffer!

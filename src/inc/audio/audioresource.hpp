@@ -10,8 +10,11 @@
 
 #include <stdtypes>
 #include <time/time.hpp>
+#include "audiobuffer.hpp"
 
 namespace audio {
+
+#define AUDIO_RESOURCE_BUFFERS	3
 
 class Resource
 {
@@ -21,12 +24,15 @@ public:
 private:
 	SharedByteArray bytearray;
 
-	uint audioBufferID;
+	Buffer buffer[AUDIO_RESOURCE_BUFFERS];
+	ByteArray data[AUDIO_RESOURCE_BUFFERS];
+
+	int64 bytes;
 	MilliSecond duration;
 	int32 frequency; // rate
 	int32 state;
+	int32 bitsPerSample;
 	int16 channels;
-	int16 bitsPerSample;
 public:
 	Resource();
 	virtual ~Resource();
@@ -35,10 +41,21 @@ public:
 
 	bool load( SharedByteArray& bytearray );
 
+	bool isLoaded() const;
+
 	bool makeEffect();
 	bool isEffect() const;
 
+	bool makeStream();
+	bool isStream() const;
+
 	uint getBufferID() const;
+
+	int64 getBytes() const;
+	MilliSecond getDuration() const;
+	int32 getFrequency() const;
+	int32 getBitsPerSample() const;
+	int16 getChannels() const;
 public:
 	friend class Player;
 };

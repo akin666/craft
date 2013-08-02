@@ -13,15 +13,22 @@
 #include <alc.h>
 #include <log>
 
+#define WORD_TO_BYTES 2
+
+#define AUDIO_RESOURCE_STATE_NONE	0x0000
+#define AUDIO_RESOURCE_STATE_LOADED	0x0001
+#define AUDIO_RESOURCE_STATE_EFFECT	0x0002
+#define AUDIO_RESOURCE_STATE_STREAM	0x0004
+
 namespace audio {
 
 Resource::Resource()
-: audioBufferID( 0 )
+: bytes( 0 )
 , duration( 0 )
 , frequency( 0 )
-, state( 0 )
-, channels( 0 )
+, state( AUDIO_RESOURCE_STATE_NONE )
 , bitsPerSample( 0 )
+, channels( 0 )
 {
 }
 
@@ -32,15 +39,9 @@ Resource::~Resource()
 
 void Resource::release()
 {
-	if( audioBufferID != 0 )
+	for( int i = 0 ; i < AUDIO_RESOURCE_BUFFERS ; ++i )
 	{
-		alDeleteBuffers( 1 , &audioBufferID );
-		int error = 0;
-		if((error = alGetError()) != AL_NO_ERROR)
-		{
-//			LOG->error("%s:%i AL Error %i" , __FILE__ , __LINE__ , error );
-			return;
-		}
+		buffer[ i ].release();
 	}
 }
 
@@ -48,7 +49,45 @@ bool Resource::load( SharedByteArray& bytearray )
 {
 	this->bytearray = bytearray;
 
+	{
+		int endian = 0; // 0 for Little-Endian, 1 for Big-Endian
+		helpers::ByteArrayFile memoryfile( bytearray );
+
+		OggVorbis_File vf;
+		ov_callbacks callbacks;
+
+		callbacks.read_func = helpers::byteArrayRead;
+		callbacks.close_func = helpers::byteArrayClose;
+		callbacks.seek_func = helpers::byteArraySeek;
+		callbacks.tell_func = helpers::byteArrayTell;
+
+		int code = ov_open_callbacks( &memoryfile , &vf , NULL , 0 , callbacks );
+		if( code < 0 )
+		{
+			return false;
+		}
+
+		vorbis_info *info = ov_info( &vf , -1 );
+
+		channels = info->channels;
+		bitsPerSample = 16;
+		frequency = info->rate;
+
+		bytes = ov_pcm_total( &vf , -1 );
+		bytes *= WORD_TO_BYTES * channels;
+
+		duration = 1000.0f * ov_time_total( &vf , -1 );
+		ov_clear( &vf );
+	}
+
+	state |= AUDIO_RESOURCE_STATE_LOADED;
+
 	return true;
+}
+
+bool Resource::isLoaded() const
+{
+	return (state & AUDIO_RESOURCE_STATE_LOADED) != 0;
 }
 
 bool Resource::makeEffect()
@@ -75,18 +114,10 @@ bool Resource::makeEffect()
 
 		vorbis_info *info = ov_info( &vf , -1 );
 
-		channels = info->channels;
-		bitsPerSample = 16;
-		frequency = info->rate;
+		unpacked.resize( bytes );
 
 		int size = 4096 * bitsPerSample;
 		size_t position = 0;
-
-		int64 bytes = ov_pcm_total( &vf , -1 );
-
-		bytes *= 2 * channels;
-
-		unpacked.resize( bytes );
 		int64 ret = 1;
 		int bitstream = 0;
 		while( ret && position < bytes )
@@ -105,14 +136,10 @@ bool Resource::makeEffect()
 
 	// unpacked contains the unpacked audiodata now
 	// All attributes on audioresouce has been populated.
-	if( audioBufferID == 0 )
+	if( !buffer[0].initialize() )
 	{
-		alGenBuffers( 1 , &audioBufferID );
-		if((error = alGetError()) != AL_NO_ERROR)
-		{
-			LOG->error("%s:%i AL Error %i" , __FILE__ , __LINE__ , error );
-			return false;
-		}
+		LOG->error("%s:%i AL Error %i" , __FILE__ , __LINE__ , error );
+		return false;
 	}
 
 	// got bufferID
@@ -122,26 +149,64 @@ bool Resource::makeEffect()
 		format = AL_FORMAT_STEREO16;
 	}
 
-	alBufferData( audioBufferID , format, &unpacked[0], static_cast < ALsizei > (unpacked.size()), frequency );
-	if((error = alGetError()) != AL_NO_ERROR)
+	if( !buffer[0].full( channels , frequency , unpacked ) )
 	{
 		LOG->error("%s:%i AL Error %i" , __FILE__ , __LINE__ , error );
 		return false;
 	}
 
+	// release bytearray, we will not need it again.
 	bytearray.reset();
+
+	state |= AUDIO_RESOURCE_STATE_EFFECT;
 
 	return true;
 }
 
 bool Resource::isEffect() const
 {
-	return audioBufferID != 0;
+	return (state & AUDIO_RESOURCE_STATE_EFFECT) != 0;
+}
+
+bool Resource::makeStream()
+{
+	//state |= AUDIO_RESOURCE_STATE_STREAM;
+	return false;
+}
+
+bool Resource::isStream() const
+{
+	return (state & AUDIO_RESOURCE_STATE_STREAM) != 0;
 }
 
 uint Resource::getBufferID() const
 {
-	return audioBufferID;
+	return buffer[0].getID();
+}
+
+int64 Resource::getBytes() const
+{
+	return bytes;
+}
+
+MilliSecond Resource::getDuration() const
+{
+	return duration;
+}
+
+int32 Resource::getFrequency() const
+{
+	return frequency;
+}
+
+int32 Resource::getBitsPerSample() const
+{
+	return bitsPerSample;
+}
+
+int16 Resource::getChannels() const
+{
+	return channels;
 }
 
 } // namespace audio

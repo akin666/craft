@@ -30,13 +30,14 @@ void Buffer::release()
 	if( id != 0 )
 	{
 		alDeleteBuffers( 1 , &id );
+		id = 0;
 		int error = 0;
 		if((error = alGetError()) != AL_NO_ERROR)
 		{
-			LOG->error("%s:%i AL Error %i" , __FILE__ , __LINE__ , error );
+			// TODO Fix the error logging at end.
+//			LOG->error("%s:%i AL Error %i" , __FILE__ , __LINE__ , error );
 			return;
 		}
-		id = 0;
 	}
 }
 

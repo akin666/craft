@@ -43,6 +43,7 @@ void display()
 {
 	gameapplication->display();
 }
+
 void resize( int width, int height )
 {
 	gameapplication->resize( width , height );

@@ -1,11 +1,11 @@
 /*
- * audioplayer.cpp
+ * audioplayerimpl.cpp
  *
- *  Created on: 31.7.2013
+ *  Created on: 2.8.2013
  *      Author: akin
  */
 
-#include "audioplayer.hpp"
+#include "audioplayerimpl.hpp"
 
 #include <bytearrayhelpers.hpp>
 #include <ogg/ogg.h>
@@ -16,17 +16,18 @@
 
 namespace audio {
 
-Player::Player()
+PlayerImpl::PlayerImpl( Context::Ptr context )
 : sourceID( 0 )
+, context( context )
 {
 }
 
-Player::~Player()
+PlayerImpl::~PlayerImpl()
 {
 	release();
 }
 
-void Player::release()
+void PlayerImpl::release()
 {
 	if( sourceID != 0 )
 	{
@@ -42,7 +43,7 @@ void Player::release()
 	}
 }
 
-void Player::initialize()
+void PlayerImpl::initialize()
 {
 	if( sourceID != 0 )
 	{
@@ -58,7 +59,7 @@ void Player::initialize()
 	}
 }
 
-void Player::setPosition( glm::mat4& matrix )
+void PlayerImpl::setPosition( glm::mat4& matrix )
 {
 	if( sourceID == 0 )
 	{
@@ -74,7 +75,7 @@ void Player::setPosition( glm::mat4& matrix )
 	}
 }
 
-bool Player::set( Resource::Ptr& data )
+bool PlayerImpl::set( Resource::Ptr& data )
 {
 	if( sourceID == 0 )
 	{
@@ -104,7 +105,7 @@ bool Player::set( Resource::Ptr& data )
 	return true;
 }
 
-void Player::setVolume( float volume )
+void PlayerImpl::setVolume( float volume )
 {
 	if( sourceID == 0 )
 	{
@@ -119,7 +120,7 @@ void Player::setVolume( float volume )
 	}
 }
 
-void Player::setPitch( float pitch )
+void PlayerImpl::setPitch( float pitch )
 {
 	if( sourceID == 0 )
 	{
@@ -134,7 +135,7 @@ void Player::setPitch( float pitch )
 	}
 }
 
-void Player::stop()
+void PlayerImpl::stop()
 {
 	if( sourceID == 0 )
 	{
@@ -150,7 +151,7 @@ void Player::stop()
 	}
 }
 
-void Player::pause()
+void PlayerImpl::pause()
 {
 	if( sourceID == 0 )
 	{
@@ -167,7 +168,7 @@ void Player::pause()
 	}
 }
 
-void Player::play()
+void PlayerImpl::play()
 {
 	if( sourceID == 0 )
 	{
@@ -184,7 +185,7 @@ void Player::play()
 	}
 }
 
-void Player::update()
+void PlayerImpl::update()
 {
 }
 

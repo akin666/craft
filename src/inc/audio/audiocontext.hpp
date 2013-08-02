@@ -8,6 +8,7 @@
 #ifndef AUDIOCONTEXT_HPP_
 #define AUDIOCONTEXT_HPP_
 
+#include <stdtypes>
 #include "audiolistener.hpp"
 #include "audioplayer.hpp"
 
@@ -15,8 +16,11 @@ namespace audio {
 
 #define AUDIO_BUFFER_SIZE 32768 // 32 KB buffers
 
-class Context
+class Context : public std::enable_shared_from_this<Context>
 {
+public:
+	typedef typename std::shared_ptr<Context> Ptr;
+	typedef typename std::weak_ptr<Context> WeakPtr;
 private:
 	void *cptr;
 	void *dptr;

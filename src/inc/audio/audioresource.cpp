@@ -39,10 +39,7 @@ Resource::~Resource()
 
 void Resource::release()
 {
-	for( int i = 0 ; i < AUDIO_RESOURCE_BUFFERS ; ++i )
-	{
-		buffer[ i ].release();
-	}
+	buffer.release();
 }
 
 bool Resource::load( SharedByteArray& bytearray )
@@ -136,20 +133,14 @@ bool Resource::makeEffect()
 
 	// unpacked contains the unpacked audiodata now
 	// All attributes on audioresouce has been populated.
-	if( !buffer[0].initialize() )
+	if( !buffer.initialize() )
 	{
 		LOG->error("%s:%i AL Error %i" , __FILE__ , __LINE__ , error );
 		return false;
 	}
 
 	// got bufferID
-	ALenum format = AL_FORMAT_MONO16;
-	if( channels == 2 )
-	{
-		format = AL_FORMAT_STEREO16;
-	}
-
-	if( !buffer[0].full( channels , frequency , unpacked ) )
+	if( !buffer.full( channels , frequency , unpacked ) )
 	{
 		LOG->error("%s:%i AL Error %i" , __FILE__ , __LINE__ , error );
 		return false;
@@ -170,8 +161,8 @@ bool Resource::isEffect() const
 
 bool Resource::makeStream()
 {
-	//state |= AUDIO_RESOURCE_STATE_STREAM;
-	return false;
+	state |= AUDIO_RESOURCE_STATE_STREAM;
+	return true;
 }
 
 bool Resource::isStream() const
@@ -181,7 +172,7 @@ bool Resource::isStream() const
 
 uint Resource::getBufferID() const
 {
-	return buffer[0].getID();
+	return buffer.getID();
 }
 
 int64 Resource::getBytes() const

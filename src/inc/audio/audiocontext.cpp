@@ -14,6 +14,8 @@
 #include <iostream>
 #include <vector>
 
+#include "audioplayerimpl.hpp"
+
 #include <log>
 
 namespace audio {
@@ -128,11 +130,12 @@ void Context::update()
 
 Player::Ptr Context::createPlayer()
 {
-	Player::Ptr instance = std::make_shared<Player>();
+	auto instance = std::make_shared<PlayerImpl>( shared_from_this() );
 
-	players.push_back( instance );
+	auto player = std::dynamic_pointer_cast<Player>( instance );
 
-	return instance;
+	players.push_back( player );
+	return player;
 
 }
 

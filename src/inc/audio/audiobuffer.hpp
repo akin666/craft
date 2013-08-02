@@ -16,6 +16,7 @@ class Buffer
 {
 private:
 	uint id;
+	ByteArray data;
 public:
 	Buffer();
 	~Buffer();
@@ -27,6 +28,8 @@ public:
 	bool full( int channels , int frequency , const ByteArray& array );
 
 	uint getID() const;
+
+	ByteArray &access();
 };
 
 } // namespace audio

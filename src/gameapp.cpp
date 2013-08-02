@@ -119,7 +119,8 @@ void GameApp::resetDisplayVariables()
 bool GameApp::postInit()
 {
 	// Audio setup
-	audioContext.intialize();
+	audioContext = std::make_shared<audio::Context>();
+	audioContext->intialize();
 
 	// GL setups.
 	resetDisplayVariables();
@@ -230,7 +231,7 @@ bool GameApp::postInit()
 	rootNode.addChild( cameraNode );
 
 	// Audio tes
-	audioPlayer = audioContext.createPlayer();
+	audioPlayer = audioContext->createPlayer();
 	audioPlayer->initialize();
 
 	auto effect_test = resources.get<resource::Audio>("audio-effect");
@@ -274,10 +275,10 @@ void GameApp::display()
 	auto& gridLocation = entity::get<LocationProperty>()->get( grid );
 
 	//pos -= 0.005f;
-	rot += 45.0f * df;
+	rot += 90.0f * df;
 	cowLocation.accessMatrix() = glm::rotate( glm::translate( glm::mat4() , glm::vec3( 0.0f , 0.0f , pos ) ), rot , glm::vec3( 0.0f , 1.0f , 0.0f ) );
 
-	cpos += 1.0 * df;
+	cpos += 10.0 * df;
 	cameraPos.z = 5.0f + glm::sin( cpos ) * 5.0f;
 
 	cameraLocation.accessMatrix() = glm::rotate( glm::translate( glm::mat4() , cameraPos ), 0.0f , glm::vec3( 0.0f , 1.0f , 0.0f ) );

@@ -9,8 +9,8 @@
 #define AUDIOPLAYER_HPP_
 
 #include "audioresource.hpp"
+#include <stdtypes>
 #include <glm/glm>
-#include <bytearrayhelpers.hpp>
 
 namespace audio {
 
@@ -19,33 +19,24 @@ class Player
 public:
 	typedef typename std::shared_ptr<Player> Ptr;
 	typedef typename std::weak_ptr<Player> WeakPtr;
-private:
-	Resource::Ptr data;
-	helpers::ByteArrayFile file; // for streaming.
-
-	uint sourceID;
-	uint bufferID[3];
 public:
-	Player();
-	~Player();
+	virtual ~Player() {}
 
-	void release();
+	virtual void release() = 0;
 
-	void initialize();
+	virtual void initialize() = 0;
 
-	void setPosition( glm::mat4& matrix );
-	bool set( Resource::Ptr& data );
+	virtual void setPosition( glm::mat4& matrix ) = 0;
+	virtual bool set( Resource::Ptr& data ) = 0;
 
-	void setVolume( float volume );
-	void setPitch( float pitch );
+	virtual void setVolume( float volume ) = 0;
+	virtual void setPitch( float pitch ) = 0;
 
-	void stop();
-	void pause();
-	void play();
-private:
-	void update();
-public:
-	friend class Context;
+	virtual void stop() = 0;
+	virtual void pause() = 0;
+	virtual void play() = 0;
+
+	virtual void update() = 0;
 };
 
 } // namespace audio

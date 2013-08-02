@@ -14,8 +14,6 @@
 
 namespace audio {
 
-#define AUDIO_RESOURCE_BUFFERS	3
-
 class Resource
 {
 public:
@@ -24,8 +22,7 @@ public:
 private:
 	SharedByteArray bytearray;
 
-	Buffer buffer[AUDIO_RESOURCE_BUFFERS];
-	ByteArray data[AUDIO_RESOURCE_BUFFERS];
+	Buffer buffer;
 
 	int64 bytes;
 	MilliSecond duration;

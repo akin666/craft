@@ -27,6 +27,8 @@ public:
 	virtual int32 getBitsPerSample() const = 0;
 	virtual int16 getChannels() const = 0;
 
+	virtual bool isFinished() const = 0;
+
 	// Does not resize bytearray.
 	virtual bool decodeNext( ByteArray& array , int& decodeCount ) = 0;
 

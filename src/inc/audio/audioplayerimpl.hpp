@@ -16,28 +16,32 @@ namespace audio {
 
 #define AUDIO_BUFFER_COUNT 3
 
+// TODO take out this crap
+// structure to hold the steaming data.
+class StreamData
+{
+public:
+	typedef typename std::shared_ptr<StreamData> Ptr;
+	typedef typename std::weak_ptr<StreamData> WeakPtr;
+public:
+	StreamData( Decoder::Ptr& decoder )
+	: decoder( decoder )
+	{
+	}
+
+	Decoder::Ptr decoder;
+	Buffer buffer[AUDIO_BUFFER_COUNT];
+
+	bool decodeIndex( int index );
+};
+
 class PlayerImpl : public Player
 {
 public:
 	typedef typename std::shared_ptr<PlayerImpl> Ptr;
 	typedef typename std::weak_ptr<PlayerImpl> WeakPtr;
 private:
-	// structure to hold the steaming data.
-	class StreamData
-	{
-	public:
-		typedef typename std::shared_ptr<StreamData> Ptr;
-		typedef typename std::weak_ptr<StreamData> WeakPtr;
-	public:
-		StreamData( Decoder::Ptr& decoder )
-		: decoder( decoder )
-		{
-		}
-
-		Decoder::Ptr decoder;
-		Buffer buffer[AUDIO_BUFFER_COUNT];
-	};
-private:
+	void queue( int index );
 	void updateStreams();
 private:
 	Resource::Ptr resource;

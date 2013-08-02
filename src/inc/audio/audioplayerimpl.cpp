@@ -29,6 +29,18 @@ PlayerImpl::~PlayerImpl()
 	release();
 }
 
+
+bool StreamData::decodeIndex( int index )
+{
+	int count;
+	if( !decoder->decodeNext( buffer[ index ].data() , count ) )
+	{
+		return false;
+	}
+	buffer[ index ].apply( decoder->getChannels() , decoder->getFrequency() , count );
+	return true;
+}
+
 void PlayerImpl::release()
 {
 	if( sourceID != 0 )
@@ -59,7 +71,9 @@ void PlayerImpl::initialize()
 
 void PlayerImpl::setPosition( glm::mat4& matrix )
 {
-	position = matrix[0];
+	position.x = matrix[0].x;
+	position.y = matrix[0].y;
+	position.z = matrix[0].z;
 
 	if( sourceID != 0 )
 	{
@@ -156,9 +170,66 @@ void PlayerImpl::pause()
 	}
 }
 
+void PlayerImpl::queue( int index )
+{
+	// read the buffer block from decoder
+	// queue the buffer
+	if( streamData || streamData->decoder->isFinished() )
+	{
+		return;
+	}
+
+	if( !streamData->decodeIndex( index ) )
+	{
+		return;
+	}
+
+	uint id = streamData->buffer[ index ].getID();
+	alSourceQueueBuffers( sourceID , 1 , &id );
+	int error = 0;
+	if((error = alGetError()) != AL_NO_ERROR)
+	{
+		LOG->error("%s:%i AL Error %i." , __FILE__ , __LINE__ , error );
+		return;
+	}
+}
+
 void PlayerImpl::updateStreams()
 {
 	// assuming that all data in StreamData is initialized correctly.
+	int error;
+	int count = 0;
+	alGetSourcei( sourceID , AL_BUFFERS_PROCESSED, &count );
+	if((error = alGetError()) != AL_NO_ERROR)
+	{
+		LOG->error("%s:%i AL Error %i." , __FILE__ , __LINE__ , error );
+		return;
+	}
+
+	// check to see if we have a buffer to deQ
+	while( count > 0 )
+	{
+		--count;
+
+		uint id = 0;
+		// remove the buffer form the source
+		alSourceUnqueueBuffers( sourceID, 1, &id );
+		if((error = alGetError()) != AL_NO_ERROR)
+		{
+			LOG->error("%s:%i AL Error %i." , __FILE__ , __LINE__ , error );
+			return;
+		}
+
+		int index = 0;
+		for( index = 0 ; index < AUDIO_BUFFER_COUNT ; ++index )
+		{
+			if( streamData->buffer[ index ].getID() == id )
+			{
+				break;
+			}
+		}
+		queue( index );
+	}
 }
 
 void PlayerImpl::play()
@@ -182,7 +253,7 @@ void PlayerImpl::play()
 		return;
 	}
 
-	if( !resource->isStream() )
+	if( resource->isStream() )
 	{
 		// Stream
 		// TODO hardcoded OGG
@@ -195,11 +266,14 @@ void PlayerImpl::play()
 
 		streamData.reset();
 		streamData = std::make_shared<StreamData>( decoder );
-
 		for( int i = 0 ; i < AUDIO_BUFFER_COUNT ; ++i )
 		{
 			streamData->buffer[ i ].initialize();
+			streamData->buffer[ i ].data().resize( AUDIO_BUFFER_SIZE );
+
+			queue( i );
 		}
+
 
 		LOG->error("%s:%i Audio Player Currently supporting only effects." , __FILE__ , __LINE__ );
 		return;
@@ -233,6 +307,12 @@ void PlayerImpl::play()
 void PlayerImpl::update()
 {
 	// upon stopping, release the ID.
+	if( sourceID == 0 || (!resource) || resource->isEffect() )
+	{
+		return;
+	}
+
+	updateStreams();
 }
 
 } // namespace audio

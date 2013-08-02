@@ -7,6 +7,8 @@
 
 #include "audiooggdecoder.hpp"
 
+#include <stdexcept>
+
 #define WORD_TO_BYTES 2
 
 #define OGGDECODER_NONE		0x0000
@@ -61,6 +63,11 @@ OggDecoder::~OggDecoder()
 		ov_clear( &vf );
 		state &= ~OGGDECODER_OPEN;
 	}
+}
+
+bool OggDecoder::isFinished() const
+{
+	return (state & OGGDECODER_OPEN) == 0;
 }
 
 int64 OggDecoder::getBytes() const

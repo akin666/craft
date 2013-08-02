@@ -11,6 +11,7 @@
 #include <stdtypes>
 #include <time/time.hpp>
 #include "audiobuffer.hpp"
+#include "audiodecoder.hpp"
 
 namespace audio {
 
@@ -53,8 +54,11 @@ public:
 	int32 getFrequency() const;
 	int32 getBitsPerSample() const;
 	int16 getChannels() const;
+
+	// TODO make const
+	SharedByteArray& data();
 public:
-	friend class Player;
+	static Decoder::Ptr createDecoder( SharedByteArray& shared , std::string type );
 };
 
 } // namespace audio

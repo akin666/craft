@@ -13,7 +13,8 @@
 #include <alc.h>
 #include <log>
 
-#define WORD_TO_BYTES 2
+// decoders
+#include "audiooggdecoder.hpp"
 
 #define AUDIO_RESOURCE_STATE_NONE	0x0000
 #define AUDIO_RESOURCE_STATE_LOADED	0x0001
@@ -47,34 +48,22 @@ bool Resource::load( SharedByteArray& bytearray )
 	this->bytearray = bytearray;
 
 	{
-		int endian = 0; // 0 for Little-Endian, 1 for Big-Endian
-		helpers::ByteArrayFile memoryfile( bytearray );
-
-		OggVorbis_File vf;
-		ov_callbacks callbacks;
-
-		callbacks.read_func = helpers::byteArrayRead;
-		callbacks.close_func = helpers::byteArrayClose;
-		callbacks.seek_func = helpers::byteArraySeek;
-		callbacks.tell_func = helpers::byteArrayTell;
-
-		int code = ov_open_callbacks( &memoryfile , &vf , NULL , 0 , callbacks );
-		if( code < 0 )
+		// TODO hardcoded OGG
+		Decoder::Ptr decoder;
+		try
+		{
+			decoder = Resource::createDecoder( bytearray , "ogg" );
+		}
+		catch( ... )
 		{
 			return false;
 		}
 
-		vorbis_info *info = ov_info( &vf , -1 );
-
-		channels = info->channels;
+		channels = decoder->getChannels();
 		bitsPerSample = 16;
-		frequency = info->rate;
-
-		bytes = ov_pcm_total( &vf , -1 );
-		bytes *= WORD_TO_BYTES * channels;
-
-		duration = 1000.0f * ov_time_total( &vf , -1 );
-		ov_clear( &vf );
+		frequency = decoder->getFrequency();
+		bytes = decoder->getBytes();
+		duration = decoder->getDuration();
 	}
 
 	state |= AUDIO_RESOURCE_STATE_LOADED;
@@ -90,59 +79,37 @@ bool Resource::isLoaded() const
 bool Resource::makeEffect()
 {
 	ByteArray unpacked;
-	int error = 0;
+
+	// TODO hardcoded OGG
 	{
-		int endian = 0; // 0 for Little-Endian, 1 for Big-Endian
-		helpers::ByteArrayFile memoryfile( bytearray );
-
-		OggVorbis_File vf;
-		ov_callbacks callbacks;
-
-		callbacks.read_func = helpers::byteArrayRead;
-		callbacks.close_func = helpers::byteArrayClose;
-		callbacks.seek_func = helpers::byteArraySeek;
-		callbacks.tell_func = helpers::byteArrayTell;
-
-		int code = ov_open_callbacks( &memoryfile , &vf , NULL , 0 , callbacks );
-		if( code < 0 )
+		Decoder::Ptr decoder;
+		try
+		{
+			decoder = Resource::createDecoder( bytearray , "ogg" );
+		}
+		catch( ... )
 		{
 			return false;
 		}
 
-		vorbis_info *info = ov_info( &vf , -1 );
-
-		unpacked.resize( bytes );
-
-		int size = 4096 * bitsPerSample;
-		size_t position = 0;
-		int64 ret = 1;
-		int bitstream = 0;
-		while( ret && position < bytes )
+		if( !decoder->decodeFully( unpacked ) )
 		{
-			ret = ov_read( &vf , (char*)(&unpacked[position]) , size , endian , 2 , 1 , &bitstream );
-			position += ret;
-			if( bytes - position < size )
-			{
-				size = bytes - position;
-			}
+			return false;
 		}
-
-		duration = 1000.0f * ov_time_total( &vf , -1 );
-		ov_clear( &vf );
 	}
 
 	// unpacked contains the unpacked audiodata now
 	// All attributes on audioresouce has been populated.
 	if( !buffer.initialize() )
 	{
-		LOG->error("%s:%i AL Error %i" , __FILE__ , __LINE__ , error );
+		LOG->error("%s:%i Buffer init error." , __FILE__ , __LINE__ );
 		return false;
 	}
 
 	// got bufferID
-	if( !buffer.full( channels , frequency , unpacked ) )
+	if( !buffer.put( channels , frequency , unpacked ) )
 	{
-		LOG->error("%s:%i AL Error %i" , __FILE__ , __LINE__ , error );
+		LOG->error("%s:%i Buffer put error." , __FILE__ , __LINE__ );
 		return false;
 	}
 
@@ -198,6 +165,28 @@ int32 Resource::getBitsPerSample() const
 int16 Resource::getChannels() const
 {
 	return channels;
+}
+
+SharedByteArray& Resource::data()
+{
+	return bytearray;
+}
+
+Decoder::Ptr Resource::createDecoder( SharedByteArray& shared , std::string type )
+{
+	if( type == "ogg" )
+	{
+		try
+		{
+			auto instance = std::make_shared<OggDecoder>( shared );
+			auto decoder = std::dynamic_pointer_cast<Decoder>( instance );
+			return decoder;
+		}
+		catch( ... )
+		{
+		}
+	}
+	return nullptr;
 }
 
 } // namespace audio

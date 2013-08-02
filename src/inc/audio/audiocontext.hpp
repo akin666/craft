@@ -25,9 +25,16 @@ private:
 	void *cptr;
 	void *dptr;
 	int error;
+	int state;
 	Listener listener;
 
 	std::vector< Player::WeakPtr > players;
+
+	// source handling
+	std::vector< uint > freeSources;
+	std::vector< uint > sources;
+
+	void destroySources();
 public:
 	Context();
 	~Context();
@@ -43,6 +50,10 @@ public:
 	void update();
 
 	Player::Ptr createPlayer();
+
+	void generateSources();
+	uint retainSource();
+	void releaseSource( uint source );
 };
 
 } // namespace audio

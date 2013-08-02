@@ -12,6 +12,7 @@
 #include <alc.h>
 #include <log>
 #include "audiotools.hpp"
+#include "audiocontext.hpp"
 
 namespace audio {
 
@@ -56,8 +57,13 @@ bool Buffer::initialize()
 	return true;
 }
 
-bool Buffer::full( int channels , int frequency , const ByteArray& array )
+bool Buffer::put( int channels , int frequency , const ByteArray& array )
 {
+	if( id == 0 )
+	{
+		return false;
+	}
+
 	// got bufferID
 	ALenum format = AL_FORMAT_MONO16;
 	if( channels == 2 )
@@ -73,6 +79,38 @@ bool Buffer::full( int channels , int frequency , const ByteArray& array )
 		return false;
 	}
 	return true;
+}
+
+bool Buffer::apply( int channels , int frequency , int size )
+{
+	if( id == 0 )
+	{
+		return false;
+	}
+	ALenum format = AL_FORMAT_MONO16;
+	if( channels == 2 )
+	{
+		format = AL_FORMAT_STEREO16;
+	}
+
+	if( size > buffer.size() )
+	{
+		size = buffer.size();
+	}
+
+	int error;
+	alBufferData( id , format, &buffer[0], static_cast < ALsizei > (size), frequency );
+	if((error = alGetError()) != AL_NO_ERROR)
+	{
+		LOG->error("%s:%i AL Error %i %s" , __FILE__ , __LINE__ , error , tools::resolveError( error ).c_str() );
+		return false;
+	}
+	return true;
+}
+
+ByteArray &Buffer::data()
+{
+	return buffer;
 }
 
 uint Buffer::getID() const

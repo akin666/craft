@@ -14,7 +14,7 @@
 
 namespace audio {
 
-#define AUDIO_BUFFER_SIZE 44100 // 1second of singlechannel sound
+#define AUDIO_BUFFER_SIZE 4096 * 16
 
 class Context : public std::enable_shared_from_this<Context>
 {

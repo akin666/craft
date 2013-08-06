@@ -207,7 +207,7 @@ bool GameApp::postInit()
 	auto& cameraLocation = entity::get<LocationProperty>()->get( camera );
 	auto& gridLocation = entity::get<LocationProperty>()->get( grid );
 
-	pos = -10.0f;
+	pos = 0.0f;
 	rot = 0.0f;
 
 	cameraPos.y = 1.0f;
@@ -285,13 +285,22 @@ void GameApp::update()
 	auto& cameraLocation = entity::get<LocationProperty>()->get( camera );
 	auto& gridLocation = entity::get<LocationProperty>()->get( grid );
 
-	//pos -= 0.005f;
+	pos += df;
 	rot += 90.0f * df;
-	cowLocation.accessMatrix() = glm::rotate( glm::translate( glm::mat4() , glm::vec3( 0.0f , 0.0f , pos ) ), rot , glm::vec3( 0.0f , 1.0f , 0.0f ) );
+	cowLocation.accessMatrix() = glm::rotate(
+										glm::translate( glm::mat4() ,
+														glm::vec3(
+																sin( pos ) * 50 ,
+																0 ,
+																0
+																) )
+										, rot
+										, glm::vec3( 0.0f , 1.0f , 0.0f )
+								);
 
 	audioPlayer->setPosition( cowLocation.accessMatrix() );
 
-	float dest = 100.0f;
+	float dest = 1.0f;
 	cpos += 2.0 * df;
 //	cameraPos.z = dest + glm::sin( cpos ) * dest;
 	cameraPos.x = dest + glm::sin( cpos ) * dest;

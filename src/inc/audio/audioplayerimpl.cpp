@@ -240,7 +240,12 @@ void PlayerImpl::play()
 	else if( resource->isEffect() )
 	{
 		// Effect
-		alSourcei( sourceID , AL_BUFFER, resource->getBufferID() );
+		// only using queubuffers
+		// (this is due to, with some devices, the source type
+		// could not be transformed from 1 type to another, without
+		// destroy..)
+		uint bufferID = resource->getBufferID();
+		alSourceQueueBuffers( sourceID , 1 , &bufferID );
 		int error = 0;
 		if((error = alGetError()) != AL_NO_ERROR)
 		{

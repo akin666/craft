@@ -6,11 +6,7 @@
  */
 
 #include "audioresource.hpp"
-#include <bytearrayhelpers.hpp>
-#include <ogg/ogg.h>
-#include <vorbis/vorbisfile.h>
-#include <al.h>
-#include <alc.h>
+#include <stdal>
 #include <log>
 
 // decoders

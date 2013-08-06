@@ -1,0 +1,21 @@
+
+#ifndef _STDAL_H_
+#define _STDAL_H_
+
+#include <stdtypes>
+
+//include open AL
+#ifdef __APPLE__
+    #include <OpenAL/al.h>
+    #include <OpenAL/alc.h>
+#endif
+#ifdef OS_LINUX
+    #include <AL/al.h>
+    #include <AL/alc.h>
+#endif
+#ifdef OS_WINDOWS
+	#include <al.h>
+	#include <alc.h>
+#endif
+
+#endif // _STDAL_H_

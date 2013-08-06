@@ -6,16 +6,8 @@
  */
 
 #include "audiocontext.hpp"
-#include <al.h>
-#include <alc.h>
-//#include <alut.h>
-#include <vorbis/vorbisfile.h>
-#include <cstdio>
-#include <iostream>
-#include <vector>
-
+#include <stdal>
 #include "audioplayerimpl.hpp"
-
 #include <log>
 
 

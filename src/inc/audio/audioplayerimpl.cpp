@@ -6,12 +6,7 @@
  */
 
 #include "audioplayerimpl.hpp"
-
-#include <bytearrayhelpers.hpp>
-#include <ogg/ogg.h>
-#include <vorbis/vorbisfile.h>
-#include <al.h>
-#include <alc.h>
+#include <stdal>
 #include <log>
 
 #define AUDIO_PLAYER_NONE		0x0000
@@ -293,14 +288,17 @@ void PlayerImpl::play()
 
 bool PlayerImpl::playing() const
 {
+	return (state & (AUDIO_PLAYER_PLAY | AUDIO_PLAYER_PAUSED)) == AUDIO_PLAYER_PLAY;
 }
 
 bool PlayerImpl::stopped() const
 {
+	return (state & AUDIO_PLAYER_PLAY) == 0;
 }
 
 bool PlayerImpl::paused() const
 {
+	return (state & AUDIO_PLAYER_PAUSED) == AUDIO_PLAYER_PAUSED;
 }
 
 void PlayerImpl::update()

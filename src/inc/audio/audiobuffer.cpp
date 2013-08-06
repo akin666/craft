@@ -6,10 +6,7 @@
  */
 
 #include "audiobuffer.hpp"
-#include <ogg/ogg.h>
-#include <vorbis/vorbisfile.h>
-#include <al.h>
-#include <alc.h>
+#include <stdal>
 #include <log>
 #include "audiotools.hpp"
 #include "audiocontext.hpp"

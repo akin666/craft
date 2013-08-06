@@ -7,8 +7,7 @@
 
 #include "audiolistener.hpp"
 
-#include <al.h>
-#include <alc.h>
+#include <stdal>
 #include <log>
 
 namespace audio {

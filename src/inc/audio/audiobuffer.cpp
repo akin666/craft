@@ -54,18 +54,51 @@ bool Buffer::initialize()
 	return true;
 }
 
-bool Buffer::put( int channels , int frequency , const ByteArray& array )
+bool Buffer::put( Decoder::Ptr& decoder , const ByteArray& array )
 {
 	if( id == 0 )
 	{
 		return false;
 	}
 
-	// got bufferID
+	int channels = decoder->getChannels();
+	int bpc = decoder->getBitsPerSample();
+	int frequency = decoder->getFrequency();
+	// resolve format.
 	ALenum format = AL_FORMAT_MONO16;
 	if( channels == 2 )
 	{
-		format = AL_FORMAT_STEREO16;
+		if( bpc == 16 )
+		{
+			format = AL_FORMAT_STEREO16;
+		}
+		else if( bpc == 8 )
+		{
+			format = AL_FORMAT_STEREO8;
+		}
+		else
+		{
+			return false;
+		}
+	}
+	else if( channels == 1 )
+	{
+		if( bpc == 16 )
+		{
+			format = AL_FORMAT_MONO16;
+		}
+		else if( bpc == 8 )
+		{
+			format = AL_FORMAT_MONO8;
+		}
+		else
+		{
+			return false;
+		}
+	}
+	else
+	{
+		return false;
 	}
 
 	int error;
@@ -78,25 +111,61 @@ bool Buffer::put( int channels , int frequency , const ByteArray& array )
 	return true;
 }
 
-bool Buffer::apply( int channels , int frequency , int size )
+bool Buffer::apply( Decoder::Ptr& decoder )
 {
 	if( id == 0 )
 	{
 		return false;
 	}
+
+	int channels = decoder->getChannels();
+	int bpc = decoder->getBitsPerSample();
+	int frequency = decoder->getFrequency();
+	// resolve format.
 	ALenum format = AL_FORMAT_MONO16;
 	if( channels == 2 )
 	{
-		format = AL_FORMAT_STEREO16;
+		if( bpc == 16 )
+		{
+			format = AL_FORMAT_STEREO16;
+		}
+		else if( bpc == 8 )
+		{
+			format = AL_FORMAT_STEREO8;
+		}
+		else
+		{
+			return false;
+		}
+	}
+	else if( channels == 1 )
+	{
+		if( bpc == 16 )
+		{
+			format = AL_FORMAT_MONO16;
+		}
+		else if( bpc == 8 )
+		{
+			format = AL_FORMAT_MONO8;
+		}
+		else
+		{
+			return false;
+		}
+	}
+	else
+	{
+		return false;
 	}
 
-	if( size > buffer.size() )
+	int count;
+	if( !decoder->decodeNext( buffer , count ) )
 	{
-		size = buffer.size();
+		return false;
 	}
 
 	int error;
-	alBufferData( id , format, &buffer[0], static_cast < ALsizei > (size), frequency );
+	alBufferData( id , format, &buffer[0], static_cast < ALsizei > (count), frequency );
 	if((error = alGetError()) != AL_NO_ERROR)
 	{
 		LOG->error("%s:%i AL Error %i %s" , __FILE__ , __LINE__ , error , tools::resolveError( error ).c_str() );

@@ -32,6 +32,15 @@ public:
 	virtual void setVolume( float volume ) = 0;
 	virtual void setPitch( float pitch ) = 0;
 
+	virtual void setMaxDistance( float distance ) = 0;
+	virtual void setRollOffFactor( float factor ) = 0;
+	virtual void setReferenceDistance( float refdist ) = 0;
+	virtual void setMinGain( float min ) = 0;
+	virtual void setMaxGain( float max ) = 0;
+	virtual void setOuterGain( float outer ) = 0;
+	virtual void setInnerAngle( float iangle ) = 0;
+	virtual void setOuterAngle( float oangle ) = 0;
+
 	virtual void stop() = 0;
 	virtual void pause() = 0;
 	virtual void play() = 0;

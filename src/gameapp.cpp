@@ -251,9 +251,8 @@ bool GameApp::postInit()
 	auto stream_res = stream_test->get();
 	if( audioPlayerStream->set( stream_res ) )
 	{
-		audioPlayerStream->play();
+	//	audioPlayerStream->play();
 	}
-	/**/
 
 	native::getTime( current );
 
@@ -290,10 +289,17 @@ void GameApp::update()
 	rot += 90.0f * df;
 	cowLocation.accessMatrix() = glm::rotate( glm::translate( glm::mat4() , glm::vec3( 0.0f , 0.0f , pos ) ), rot , glm::vec3( 0.0f , 1.0f , 0.0f ) );
 
-	cpos += 10.0 * df;
-	cameraPos.z = 5.0f + glm::sin( cpos ) * 5.0f;
+	audioPlayer->setPosition( cowLocation.accessMatrix() );
+
+	float dest = 100.0f;
+	cpos += 2.0 * df;
+//	cameraPos.z = dest + glm::sin( cpos ) * dest;
+	cameraPos.x = dest + glm::sin( cpos ) * dest;
 
 	cameraLocation.accessMatrix() = glm::rotate( glm::translate( glm::mat4() , cameraPos ), 0.0f , glm::vec3( 0.0f , 1.0f , 0.0f ) );
+
+	auto& cameraCamera = entity::get<CameraProperty>()->get( camera );
+	audioContext->getListener().setPosition( cameraCamera.getView() );
 
 	scene.traverse();
 

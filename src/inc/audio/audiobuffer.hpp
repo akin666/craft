@@ -9,6 +9,7 @@
 #define AUDIOBUFFER_HPP_
 
 #include <stdtypes>
+#include "audiodecoder.hpp"
 
 namespace audio {
 
@@ -25,9 +26,9 @@ public:
 
 	bool initialize();
 
-	bool put( int channels , int frequency , const ByteArray& array );
+	bool put( Decoder::Ptr& decoder , const ByteArray& array );
 
-	bool apply( int channels , int frequency , int size );
+	bool apply( Decoder::Ptr& decoder );
 
 	uint getID() const;
 

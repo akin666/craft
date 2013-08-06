@@ -81,7 +81,7 @@ bool Resource::isLoaded() const
 bool Resource::makeEffect()
 {
 	ByteArray unpacked;
-
+	if( bytearray )
 	{
 		Decoder::Ptr decoder;
 		try
@@ -102,20 +102,25 @@ bool Resource::makeEffect()
 		{
 			return false;
 		}
-	}
 
-	// unpacked contains the unpacked audiodata now
-	// All attributes on audioresouce has been populated.
-	if( !buffer.initialize() )
-	{
-		LOG->error("%s:%i Buffer init error." , __FILE__ , __LINE__ );
-		return false;
-	}
+		// unpacked contains the unpacked audiodata now
+		// All attributes on audioresouce has been populated.
+		if( !buffer.initialize() )
+		{
+			LOG->error("%s:%i Buffer init error." , __FILE__ , __LINE__ );
+			return false;
+		}
 
-	// got bufferID
-	if( !buffer.put( channels , frequency , unpacked ) )
+		// got bufferID
+		if( !buffer.put( decoder , unpacked ) )
+		{
+			LOG->error("%s:%i Buffer put error." , __FILE__ , __LINE__ );
+			return false;
+		}
+	}
+	else
 	{
-		LOG->error("%s:%i Buffer put error." , __FILE__ , __LINE__ );
+		LOG->error("%s:%i No ByteArray set." , __FILE__ , __LINE__ );
 		return false;
 	}
 

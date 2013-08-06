@@ -62,11 +62,21 @@ private:
 	uint sourceID;
 
 	Context::WeakPtr context;
-
-	glm::vec3 position;
-	float volume;
-	float pitch;
 	uint32 state;
+
+	glm::vec4 position;
+	float volume;				// 1.0f
+	float pitch;				// 1.0f
+	float maxDistance;			// 10.0f
+	float rolloffFactor;		// 1.0f
+	float referenceDistance;	// 5.0f
+	float minGain;				// 0.1f
+	float maxGain;				// 1.1f
+	float outerGain;			// 0.5f
+	float innerAngle;			// 360.f
+	float outerAngle;			// 360.f
+
+	void apply();
 public:
 	PlayerImpl( Context::Ptr context );
 	virtual ~PlayerImpl();
@@ -80,6 +90,15 @@ public:
 
 	virtual void setVolume( float volume );
 	virtual void setPitch( float pitch );
+
+	virtual void setMaxDistance( float distance );
+	virtual void setRollOffFactor( float factor );
+	virtual void setReferenceDistance( float refdist );
+	virtual void setMinGain( float min );
+	virtual void setMaxGain( float max );
+	virtual void setOuterGain( float outer );
+	virtual void setInnerAngle( float iangle );
+	virtual void setOuterAngle( float oangle );
 
 	virtual void stop();
 	virtual void pause();

@@ -29,9 +29,9 @@ Listener::~Listener()
 {
 }
 
-void Listener::setPosition( const glm::mat4& position )
+void Listener::setPosition( const glm::mat4& matrix )
 {
-	glm::mat4 mat( position );
+	glm::mat4 mat( matrix );
 	mat[0].x = 0.0f;
 	mat[0].y = 0.0f;
 	mat[0].z = 0.0f;
@@ -47,7 +47,9 @@ void Listener::setPosition( const glm::mat4& position )
 	orientation[4] = upv.y;
 	orientation[5] = upv.z;
 
-	alListenerfv( AL_POSITION , &((position[0])[0]) );
+	position = matrix * glm::vec4( 0.0f , 0.0f , 0.0f , 1.0f );
+
+	alListenerfv( AL_POSITION , &position[0]  );
 	if ((error = alGetError()) != AL_NO_ERROR)
 	{
 		LOG->error("%s:%i AL Error %i" , __FILE__ , __LINE__ , error );

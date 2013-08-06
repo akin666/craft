@@ -19,15 +19,82 @@ namespace audio {
 PlayerImpl::PlayerImpl( Context::Ptr context )
 : sourceID( 0 )
 , context( context )
+, state( AUDIO_PLAYER_NONE )
 , volume( 1.0f )
 , pitch( 1.0f )
-, state( AUDIO_PLAYER_NONE )
+, maxDistance( 10.0f )
+, rolloffFactor( 1.0f )
+, referenceDistance( 1.0f )
+, minGain( 0.0f )
+, maxGain( 1.0f )
+, outerGain( 0.1f )
+, innerAngle( 360.0f )
+, outerAngle( 360.0f )
 {
 }
 
 PlayerImpl::~PlayerImpl()
 {
 	release();
+}
+
+void PlayerImpl::apply()
+{
+	if( sourceID != 0 )
+	{
+		int error = 0;
+
+		alSourcef( sourceID , AL_CONE_OUTER_ANGLE , outerAngle );
+		if((error = alGetError()) != AL_NO_ERROR)
+		{
+			LOG->error("%s:%i AL Error %i" , __FILE__ , __LINE__ , error );
+		}
+		alSourcef( sourceID , AL_CONE_INNER_ANGLE , innerAngle );
+		if((error = alGetError()) != AL_NO_ERROR)
+		{
+			LOG->error("%s:%i AL Error %i" , __FILE__ , __LINE__ , error );
+		}
+		alSourcef( sourceID , AL_CONE_OUTER_GAIN , outerGain );
+		if((error = alGetError()) != AL_NO_ERROR)
+		{
+			LOG->error("%s:%i AL Error %i" , __FILE__ , __LINE__ , error );
+		}
+		alSourcef( sourceID , AL_MAX_GAIN , maxGain );
+		if((error = alGetError()) != AL_NO_ERROR)
+		{
+			LOG->error("%s:%i AL Error %i" , __FILE__ , __LINE__ , error );
+		}
+		alSourcef( sourceID , AL_MIN_GAIN , minGain );
+		if((error = alGetError()) != AL_NO_ERROR)
+		{
+			LOG->error("%s:%i AL Error %i" , __FILE__ , __LINE__ , error );
+		}
+		alSourcef( sourceID , AL_REFERENCE_DISTANCE , referenceDistance );
+		if((error = alGetError()) != AL_NO_ERROR)
+		{
+			LOG->error("%s:%i AL Error %i" , __FILE__ , __LINE__ , error );
+		}
+		alSourcef( sourceID , AL_ROLLOFF_FACTOR , rolloffFactor );
+		if((error = alGetError()) != AL_NO_ERROR)
+		{
+			LOG->error("%s:%i AL Error %i" , __FILE__ , __LINE__ , error );
+		}
+		alSourcef( sourceID , AL_MAX_DISTANCE , maxDistance );
+		if((error = alGetError()) != AL_NO_ERROR)
+		{
+			LOG->error("%s:%i AL Error %i" , __FILE__ , __LINE__ , error );
+		}
+		alSourcef( sourceID , AL_PITCH , pitch );
+		if((error = alGetError()) != AL_NO_ERROR)
+		{
+			LOG->error("%s:%i AL Error %i" , __FILE__ , __LINE__ , error );
+		}
+		alSourcef( sourceID , AL_GAIN , volume );
+		if((error = alGetError()) != AL_NO_ERROR)
+		{
+			LOG->error("%s:%i AL Error %i" , __FILE__ , __LINE__ , error );
+		}
+	}
 }
 
 uint StreamData::getID( int index ) const
@@ -49,13 +116,7 @@ int StreamData::getIndex( uint id )
 
 bool StreamData::decodeIndex( int index )
 {
-	int count;
-	if( !decoder->decodeNext( buffer[ index ].data() , count ) )
-	{
-		return false;
-	}
-	buffer[ index ].apply( decoder->getChannels() , decoder->getFrequency() , count );
-	return true;
+	return buffer[ index ].apply( decoder );
 }
 
 void PlayerImpl::release()
@@ -76,9 +137,7 @@ void PlayerImpl::initialize()
 
 void PlayerImpl::setPosition( glm::mat4& matrix )
 {
-	position.x = matrix[0].x;
-	position.y = matrix[0].y;
-	position.z = matrix[0].z;
+	position = matrix * glm::vec4( 0.0f , 0.0f , 0.0f , 1.0f );
 
 	if( sourceID != 0 )
 	{
@@ -128,6 +187,127 @@ void PlayerImpl::setPitch( float pitch )
 	if( sourceID != 0 )
 	{
 		alSourcef( sourceID , AL_PITCH , pitch );
+		int error = 0;
+		if((error = alGetError()) != AL_NO_ERROR)
+		{
+			LOG->error("%s:%i AL Error %i" , __FILE__ , __LINE__ , error );
+		}
+	}
+}
+
+
+void PlayerImpl::setMaxDistance( float distance )
+{
+	this->maxDistance = distance;
+
+	if( sourceID != 0 )
+	{
+		alSourcef( sourceID , AL_MAX_DISTANCE , maxDistance );
+		int error = 0;
+		if((error = alGetError()) != AL_NO_ERROR)
+		{
+			LOG->error("%s:%i AL Error %i" , __FILE__ , __LINE__ , error );
+		}
+	}
+}
+
+void PlayerImpl::setRollOffFactor( float factor )
+{
+	this->rolloffFactor = factor;
+
+	if( sourceID != 0 )
+	{
+		alSourcef( sourceID , AL_ROLLOFF_FACTOR , rolloffFactor );
+		int error = 0;
+		if((error = alGetError()) != AL_NO_ERROR)
+		{
+			LOG->error("%s:%i AL Error %i" , __FILE__ , __LINE__ , error );
+		}
+	}
+}
+
+void PlayerImpl::setReferenceDistance( float refdist )
+{
+	this->referenceDistance = refdist;
+
+	if( sourceID != 0 )
+	{
+		alSourcef( sourceID , AL_REFERENCE_DISTANCE , referenceDistance );
+		int error = 0;
+		if((error = alGetError()) != AL_NO_ERROR)
+		{
+			LOG->error("%s:%i AL Error %i" , __FILE__ , __LINE__ , error );
+		}
+	}
+}
+
+void PlayerImpl::setMinGain( float min )
+{
+	this->minGain = min;
+
+	if( sourceID != 0 )
+	{
+		alSourcef( sourceID , AL_MIN_GAIN , minGain );
+		int error = 0;
+		if((error = alGetError()) != AL_NO_ERROR)
+		{
+			LOG->error("%s:%i AL Error %i" , __FILE__ , __LINE__ , error );
+		}
+	}
+}
+
+void PlayerImpl::setMaxGain( float max )
+{
+	this->maxGain = max;
+
+	if( sourceID != 0 )
+	{
+		alSourcef( sourceID , AL_MAX_GAIN , maxGain );
+		int error = 0;
+		if((error = alGetError()) != AL_NO_ERROR)
+		{
+			LOG->error("%s:%i AL Error %i" , __FILE__ , __LINE__ , error );
+		}
+	}
+}
+
+void PlayerImpl::setOuterGain( float outer )
+{
+	this->outerGain = outer;
+
+	if( sourceID != 0 )
+	{
+		alSourcef( sourceID , AL_CONE_OUTER_GAIN , outerGain );
+		int error = 0;
+		if((error = alGetError()) != AL_NO_ERROR)
+		{
+			LOG->error("%s:%i AL Error %i" , __FILE__ , __LINE__ , error );
+		}
+	}
+}
+
+void PlayerImpl::setInnerAngle( float iangle )
+{
+	this->innerAngle = iangle;
+
+	if( sourceID != 0 )
+	{
+		alSourcef( sourceID , AL_CONE_INNER_ANGLE , innerAngle );
+		int error = 0;
+		if((error = alGetError()) != AL_NO_ERROR)
+		{
+			LOG->error("%s:%i AL Error %i" , __FILE__ , __LINE__ , error );
+		}
+	}
+}
+
+void PlayerImpl::setOuterAngle( float oangle )
+{
+	this->outerAngle = oangle;
+
+	if( sourceID != 0 )
+	{
+		alSourcef( sourceID , AL_CONE_OUTER_ANGLE , outerAngle );
 		int error = 0;
 		if((error = alGetError()) != AL_NO_ERROR)
 		{
@@ -215,6 +395,8 @@ void PlayerImpl::play()
 		{
 			sourceID = sptr->retainSource();
 		}
+		// apply sources settings to the "retained source"
+		apply();
 	}
 
 	if( sourceID == 0 )

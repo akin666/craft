@@ -291,6 +291,18 @@ void PlayerImpl::play()
 	}
 }
 
+bool PlayerImpl::playing() const
+{
+}
+
+bool PlayerImpl::stopped() const
+{
+}
+
+bool PlayerImpl::paused() const
+{
+}
+
 void PlayerImpl::update()
 {
 	if( (state & AUDIO_PLAYER_PLAY) == 0 )
@@ -304,15 +316,8 @@ void PlayerImpl::update()
 		return;
 	}
 
-	// Stream!
-	if( !streamData )
-	{
-		state &= ~AUDIO_PLAYER_PLAY;
-		return;
-	}
 
 	int error;
-
 	// Query source state..
 	int sourceState = 0;
 	alGetSourcei( sourceID , AL_SOURCE_STATE, &sourceState );
@@ -321,6 +326,22 @@ void PlayerImpl::update()
 		LOG->error("%s:%i AL Error %i." , __FILE__ , __LINE__ , error );
 		return;
 	}
+
+	// effect!
+	if( !streamData )
+	{
+		state &= ~AUDIO_PLAYER_PLAY;
+		if( (state & AUDIO_PLAYER_PLAY) != 0 && sourceState == AL_STOPPED )
+		{
+			if( auto sptr = context.lock() )
+			{
+				sptr->releaseSource( sourceID );
+				sourceID = 0;
+			}
+		}
+		return;
+	}
+	// Stream!
 
 	int count = 0;
 	alGetSourcei( sourceID , AL_BUFFERS_PROCESSED, &count );
@@ -356,6 +377,11 @@ void PlayerImpl::update()
 		if( sourceState == AL_STOPPED && streamData->isFinished() )
 		{
 			state &= ~AUDIO_PLAYER_PLAY;
+			if( auto sptr = context.lock() )
+			{
+				sptr->releaseSource( sourceID );
+				sourceID = 0;
+			}
 		}
 	}
 

@@ -85,6 +85,10 @@ public:
 	virtual void pause();
 	virtual void play();
 
+	virtual bool playing() const;
+	virtual bool stopped() const;
+	virtual bool paused() const;
+
 	virtual void update();
 };
 

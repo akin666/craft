@@ -36,6 +36,10 @@ public:
 	virtual void pause() = 0;
 	virtual void play() = 0;
 
+	virtual bool playing() const = 0;
+	virtual bool stopped() const = 0;
+	virtual bool paused() const = 0;
+
 	virtual void update() = 0;
 };
 

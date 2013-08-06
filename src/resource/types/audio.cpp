@@ -60,8 +60,8 @@ void Audio::realize()
 			throw std::runtime_error("Failed to decode the audio!");
 		}
 
-		// Todo, over 100k things are streams
-		if( resource->getBytes() > 100 * 1024 )
+		// Todo, over 500k things are streams
+		if( resource->getBytes() > 500 * 1024 )
 		{
 			if( !resource->makeStream() )
 			{

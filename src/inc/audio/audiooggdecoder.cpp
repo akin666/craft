@@ -97,16 +97,39 @@ int16 OggDecoder::getChannels() const
 
 bool OggDecoder::decodeNext( ByteArray& array , int& decodeCount )
 {
-	int size = array.size();
+	int size = 4096 * bitsPerSample;
+	int decodeLeft = array.size();
 	int64 ret = 1;
 
-	if( bytes - position < size )
+	if( (bytes - position) < size )
 	{
 		size = bytes - position;
 	}
-	decodeCount = ov_read( &vf , (char*)(&array[position]) , size , endian , 2 , 1 , &bitstream );
+	if( decodeLeft < size )
+	{
+		size = decodeLeft;
+	}
 
-	if( size > decodeCount )
+	int arrayPos = 0;
+	while( ret && decodeLeft > 0 )
+	{
+		ret = ov_read( &vf , (char*)(&array[arrayPos]) , size , endian , 2 , 1 , &bitstream );
+
+		arrayPos += ret;
+		position += ret;
+		decodeLeft -= ret;
+
+		if( bytes - position < size )
+		{
+			size = bytes - position;
+		}
+		if( decodeLeft < size )
+		{
+			size = decodeLeft;
+		}
+	}
+
+	if( decodeLeft != 0 )
 	{
 		ov_clear( &vf );
 		state &= ~OGGDECODER_OPEN;
@@ -119,6 +142,11 @@ bool OggDecoder::decodeFully( ByteArray& array )
 	array.resize( bytes );
 
 	int size = 4096 * bitsPerSample;
+	if( size > bytes )
+	{
+		size = bytes;
+	}
+
 	position = 0;
 	int64 ret = 1;
 	bitstream = 0;

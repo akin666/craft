@@ -23,16 +23,29 @@ class StreamData
 public:
 	typedef typename std::shared_ptr<StreamData> Ptr;
 	typedef typename std::weak_ptr<StreamData> WeakPtr;
-public:
-	StreamData( Decoder::Ptr& decoder )
-	: decoder( decoder )
-	{
-	}
 
 	Decoder::Ptr decoder;
 	Buffer buffer[AUDIO_BUFFER_COUNT];
+public:
+	StreamData( Decoder::Ptr& decoder , size_t buffer_size )
+	: decoder( decoder )
+	{
+		for( int i = 0 ; i < AUDIO_BUFFER_COUNT ; i++ )
+		{
+			buffer[ i ].initialize();
+			buffer[ i ].data().resize( buffer_size );
+		}
+	}
 
+	bool isFinished() const
+	{
+		return decoder->isFinished();
+	}
+
+	uint getID( int index ) const;
 	bool decodeIndex( int index );
+	void init( size_t size );
+	int getIndex( uint id );
 };
 
 class PlayerImpl : public Player
@@ -41,8 +54,7 @@ public:
 	typedef typename std::shared_ptr<PlayerImpl> Ptr;
 	typedef typename std::weak_ptr<PlayerImpl> WeakPtr;
 private:
-	void queue( int index );
-	void updateStreams();
+	void streamQueue( int index );
 private:
 	Resource::Ptr resource;
 

@@ -146,14 +146,14 @@ bool GameApp::postInit()
 
 	// Audio data
 	resources.load( "res/test.ogg" );
-//	resources.load( "res/Hydrate-Kenny_Beltrey.ogg" );
+	resources.load( "res/Hydrate-Kenny_Beltrey.ogg" );
 
 	// Connecting people..
 	resources.connect( "cow" , "res/cow/cow.obj" );
 	resources.connect( "grid" , "res/grid.grd" );
 	resources.connect( "shaders" , "res/simple.shader" );
 	resources.connect( "audio-effect" , "res/test.ogg" );
-//	resources.connect( "audio-stream" , "res/Hydrate-Kenny_Beltrey.ogg" );
+	resources.connect( "audio-stream" , "res/Hydrate-Kenny_Beltrey.ogg" );
 
 	// Lets fetch the dictionary for shaders..
 	auto dictptr = resources.get<resource::Dictionary>( "shaders" );
@@ -242,7 +242,7 @@ bool GameApp::postInit()
 	{
 		audioPlayer->play();
 	}
-	/*
+
 	// Audio STREAM test
 	audioPlayerStream = audioContext->createPlayer();
 	audioPlayerStream->initialize();
@@ -273,7 +273,7 @@ void GameApp::windowClosing()
 	scene.release();
 }
 
-void GameApp::display()
+void GameApp::update()
 {
 	Time prev = current;
 	native::getTime( current );
@@ -281,8 +281,6 @@ void GameApp::display()
 	Time delta( current.us - prev.us );
 
 	FloatTime df = delta.toFloatTime();
-
-	glClear( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT );
 
 	auto& cowLocation = entity::get<LocationProperty>()->get( cow );
 	auto& cameraLocation = entity::get<LocationProperty>()->get( camera );
@@ -298,6 +296,13 @@ void GameApp::display()
 	cameraLocation.accessMatrix() = glm::rotate( glm::translate( glm::mat4() , cameraPos ), 0.0f , glm::vec3( 0.0f , 1.0f , 0.0f ) );
 
 	scene.traverse();
+
+	audioContext->update();
+}
+
+void GameApp::display()
+{
+	glClear( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT );
 
 	auto& griddraw = entity::get<DrawProperty>()->get( grid );
 	auto& cowdraw = entity::get<DrawProperty>()->get( cow );

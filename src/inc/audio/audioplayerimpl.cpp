@@ -29,6 +29,22 @@ PlayerImpl::~PlayerImpl()
 	release();
 }
 
+uint StreamData::getID( int index ) const
+{
+	return buffer[ index ].getID();
+}
+
+int StreamData::getIndex( uint id )
+{
+	for( int i = 0 ; i < AUDIO_BUFFER_COUNT ; i++ )
+	{
+		if( buffer[ i ].getID() == id )
+		{
+			return i;
+		}
+	}
+	return -1;
+}
 
 bool StreamData::decodeIndex( int index )
 {
@@ -55,18 +71,6 @@ void PlayerImpl::release()
 
 void PlayerImpl::initialize()
 {
-	if( sourceID != 0 )
-	{
-		return;
-	}
-
-	alGenSources( 1 , &sourceID );
-	int error = 0;
-	if((error = alGetError()) != AL_NO_ERROR)
-	{
-		LOG->error("%s:%i AL Error %i" , __FILE__ , __LINE__ , error );
-		return;
-	}
 }
 
 void PlayerImpl::setPosition( glm::mat4& matrix )
@@ -170,11 +174,11 @@ void PlayerImpl::pause()
 	}
 }
 
-void PlayerImpl::queue( int index )
+void PlayerImpl::streamQueue( int index )
 {
 	// read the buffer block from decoder
 	// queue the buffer
-	if( streamData || streamData->decoder->isFinished() )
+	if( !streamData || streamData->isFinished() )
 	{
 		return;
 	}
@@ -191,44 +195,6 @@ void PlayerImpl::queue( int index )
 	{
 		LOG->error("%s:%i AL Error %i." , __FILE__ , __LINE__ , error );
 		return;
-	}
-}
-
-void PlayerImpl::updateStreams()
-{
-	// assuming that all data in StreamData is initialized correctly.
-	int error;
-	int count = 0;
-	alGetSourcei( sourceID , AL_BUFFERS_PROCESSED, &count );
-	if((error = alGetError()) != AL_NO_ERROR)
-	{
-		LOG->error("%s:%i AL Error %i." , __FILE__ , __LINE__ , error );
-		return;
-	}
-
-	// check to see if we have a buffer to deQ
-	while( count > 0 )
-	{
-		--count;
-
-		uint id = 0;
-		// remove the buffer form the source
-		alSourceUnqueueBuffers( sourceID, 1, &id );
-		if((error = alGetError()) != AL_NO_ERROR)
-		{
-			LOG->error("%s:%i AL Error %i." , __FILE__ , __LINE__ , error );
-			return;
-		}
-
-		int index = 0;
-		for( index = 0 ; index < AUDIO_BUFFER_COUNT ; ++index )
-		{
-			if( streamData->buffer[ index ].getID() == id )
-			{
-				break;
-			}
-		}
-		queue( index );
 	}
 }
 
@@ -265,16 +231,11 @@ void PlayerImpl::play()
 		}
 
 		streamData.reset();
-		streamData = std::make_shared<StreamData>( decoder );
+		streamData = std::make_shared<StreamData>( decoder , AUDIO_BUFFER_SIZE );
 		for( int i = 0 ; i < AUDIO_BUFFER_COUNT ; ++i )
 		{
-			streamData->buffer[ i ].initialize();
-			streamData->buffer[ i ].data().resize( AUDIO_BUFFER_SIZE );
-
-			queue( i );
+			streamQueue( i );
 		}
-
-		return;
 	}
 	else if( resource->isEffect() )
 	{
@@ -310,7 +271,38 @@ void PlayerImpl::update()
 		return;
 	}
 
-	updateStreams();
+	// Stream!
+	// assuming that all data in StreamData is initialized correctly.
+	int error;
+	int count = 0;
+	alGetSourcei( sourceID , AL_BUFFERS_PROCESSED, &count );
+	if((error = alGetError()) != AL_NO_ERROR)
+	{
+		LOG->error("%s:%i AL Error %i." , __FILE__ , __LINE__ , error );
+		return;
+	}
+
+	// check to see if we have a buffer to deQ
+	while( count > 0 )
+	{
+		--count;
+
+		uint id = 0;
+		// remove the buffer form the source
+		alSourceUnqueueBuffers( sourceID, 1, &id );
+		if((error = alGetError()) != AL_NO_ERROR)
+		{
+			LOG->error("%s:%i AL Error %i." , __FILE__ , __LINE__ , error );
+			return;
+		}
+
+		int index = streamData->getIndex( id );
+		if( index < 0 )
+		{
+			continue;
+		}
+		streamQueue( index );
+	}
 }
 
 } // namespace audio

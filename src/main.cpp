@@ -41,6 +41,7 @@ void mouseAction( int button, int state, int x, int y )
 
 void display()
 {
+	gameapplication->update();
 	gameapplication->display();
 }
 

@@ -57,6 +57,7 @@ public:
 
 	void windowClosing();
 
+	void update();
 	void display();
 	void resize( int width , int height );
 

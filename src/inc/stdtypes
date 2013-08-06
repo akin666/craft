@@ -115,7 +115,9 @@ typedef uint64 			EntityID;
 
 typedef std::vector<uchar> ByteArray;
 typedef std::shared_ptr<ByteArray> SharedByteArray;
+typedef std::shared_ptr<const ByteArray> ConstSharedByteArray;
 typedef std::weak_ptr<ByteArray> WeakByteArray;
+typedef std::weak_ptr<const ByteArray> ConstWeakByteArray;
 
 // String types
 typedef typename std::string::size_type StringPos;

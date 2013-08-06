@@ -15,7 +15,7 @@ namespace helpers {
 class ByteArrayFile
 {
 public:
-	SharedByteArray data;
+	ConstSharedByteArray data;
 	size_t read;
 
 	ByteArrayFile()
@@ -23,7 +23,7 @@ public:
 	{
 	}
 
-	ByteArrayFile( SharedByteArray& data )
+	ByteArrayFile( ConstSharedByteArray& data )
 	: data( data )
 	, read( 0 )
 	{

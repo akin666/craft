@@ -241,11 +241,11 @@ void PlayerImpl::play()
 			state |= AUDIO_PLAYER_STREAM;
 
 			// Stream
-			// TODO hardcoded OGG
-			Decoder::Ptr decoder = Resource::createDecoder( resource->data() , "ogg" );
+			Decoder::Ptr decoder = Resource::createDecoder( resource->data() , resource->getType() );
 
 			if( !decoder )
 			{
+				LOG->error("%s:%i failed to create decoder for audio." , __FILE__ , __LINE__ );
 				return;
 			}
 

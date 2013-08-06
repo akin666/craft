@@ -18,7 +18,7 @@ namespace audio {
 class OggDecoder : public Decoder
 {
 private:
-	WeakByteArray data;
+	ConstWeakByteArray data;
 	int32 state;
 
 	OggVorbis_File vf;
@@ -35,7 +35,7 @@ private:
 
 	helpers::ByteArrayFile file;
 public:
-	OggDecoder( SharedByteArray& shared );
+	OggDecoder( ConstSharedByteArray& shared );
 	virtual ~OggDecoder();
 
 	virtual int64 getBytes() const;

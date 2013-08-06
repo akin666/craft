@@ -9,6 +9,7 @@
 #include <log>
 #include <file/filebuffer.hpp>
 #include <stdexcept>
+#include <stringtools>
 
 namespace resource {
 
@@ -54,8 +55,11 @@ void Audio::realize()
 		std::memcpy( (void*)&(*bytearray)[0] , (void*)buffer.access() , buffer.getSize() );
 
 		buffer.close();
+		ConstSharedByteArray cbytearray = bytearray;
 
-		if( !resource->load( bytearray ) )
+		std::string type = stringtools::fileExtension( getPath() );
+
+		if( !resource->load( type , cbytearray ) )
 		{
 			throw std::runtime_error("Failed to decode the audio!");
 		}

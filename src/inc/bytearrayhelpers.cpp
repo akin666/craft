@@ -21,7 +21,7 @@ size_t byteArrayRead( void *target , size_t bytesize , size_t count , void *src 
 		return -1;
 	}
 
-	ByteArray barray = *(array->data);
+	const ByteArray& barray = *(array->data);
 	size_t request = count * bytesize;
 	size_t remaining = barray.size() - array->read;
 

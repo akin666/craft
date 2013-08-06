@@ -43,16 +43,22 @@ void Resource::release()
 	buffer.release();
 }
 
-bool Resource::load( SharedByteArray& bytearray )
+bool Resource::load( const std::string& type , ConstSharedByteArray& bytearray )
 {
 	this->bytearray = bytearray;
+	this->type = type;
 
 	{
 		// TODO hardcoded OGG
 		Decoder::Ptr decoder;
 		try
 		{
-			decoder = Resource::createDecoder( bytearray , "ogg" );
+			decoder = Resource::createDecoder( bytearray , type );
+			if( !decoder )
+			{
+				LOG->error("%s:%i failed to create decoder for audio." , __FILE__ , __LINE__ );
+				return false;
+			}
 		}
 		catch( ... )
 		{
@@ -80,12 +86,16 @@ bool Resource::makeEffect()
 {
 	ByteArray unpacked;
 
-	// TODO hardcoded OGG
 	{
 		Decoder::Ptr decoder;
 		try
 		{
-			decoder = Resource::createDecoder( bytearray , "ogg" );
+			decoder = Resource::createDecoder( bytearray , type );
+			if( !decoder )
+			{
+				LOG->error("%s:%i failed to create decoder for audio." , __FILE__ , __LINE__ );
+				return false;
+			}
 		}
 		catch( ... )
 		{
@@ -167,12 +177,17 @@ int16 Resource::getChannels() const
 	return channels;
 }
 
-SharedByteArray& Resource::data()
+const std::string& Resource::getType() const
+{
+	return type;
+}
+
+ConstSharedByteArray& Resource::data()
 {
 	return bytearray;
 }
 
-Decoder::Ptr Resource::createDecoder( SharedByteArray& shared , std::string type )
+Decoder::Ptr Resource::createDecoder( ConstSharedByteArray& shared , const std::string& type )
 {
 	if( type == "ogg" )
 	{
@@ -185,6 +200,10 @@ Decoder::Ptr Resource::createDecoder( SharedByteArray& shared , std::string type
 		catch( ... )
 		{
 		}
+	}
+	else
+	{
+		LOG->error("%s:%i No decoder for filetype %s defined." , __FILE__ , __LINE__ , type.c_str() );
 	}
 	return nullptr;
 }

@@ -21,8 +21,8 @@ public:
 	typedef typename std::shared_ptr<Resource> Ptr;
 	typedef typename std::weak_ptr<Resource> WeakPtr;
 private:
-	SharedByteArray bytearray;
-
+	ConstSharedByteArray bytearray;
+	std::string type;
 	Buffer buffer;
 
 	int64 bytes;
@@ -37,7 +37,7 @@ public:
 
 	void release();
 
-	bool load( SharedByteArray& bytearray );
+	bool load( const std::string& type , ConstSharedByteArray& bytearray );
 
 	bool isLoaded() const;
 
@@ -55,10 +55,10 @@ public:
 	int32 getBitsPerSample() const;
 	int16 getChannels() const;
 
-	// TODO make const
-	SharedByteArray& data();
+	const std::string& getType() const;
+	ConstSharedByteArray& data();
 public:
-	static Decoder::Ptr createDecoder( SharedByteArray& shared , std::string type );
+	static Decoder::Ptr createDecoder( ConstSharedByteArray& shared , const std::string& type );
 };
 
 } // namespace audio

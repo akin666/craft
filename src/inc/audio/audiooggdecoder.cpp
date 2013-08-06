@@ -16,7 +16,7 @@
 
 namespace audio {
 
-OggDecoder::OggDecoder( SharedByteArray& shared )
+OggDecoder::OggDecoder( ConstSharedByteArray& shared )
 : data( shared )
 , state( OGGDECODER_NONE )
 , bytes( 0 )

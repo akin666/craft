@@ -14,6 +14,11 @@
 #include <alc.h>
 #include <log>
 
+#define AUDIO_PLAYER_NONE		0x0000
+#define AUDIO_PLAYER_PLAY		0x0001
+#define AUDIO_PLAYER_PAUSED		0x0002
+#define AUDIO_PLAYER_STREAM		0x0004
+
 namespace audio {
 
 PlayerImpl::PlayerImpl( Context::Ptr context )
@@ -21,6 +26,7 @@ PlayerImpl::PlayerImpl( Context::Ptr context )
 , context( context )
 , volume( 1.0f )
 , pitch( 1.0f )
+, state( AUDIO_PLAYER_NONE )
 {
 }
 
@@ -137,6 +143,8 @@ void PlayerImpl::setPitch( float pitch )
 
 void PlayerImpl::stop()
 {
+	state &= ~AUDIO_PLAYER_PLAY;
+	state &= ~AUDIO_PLAYER_PAUSED;
 	if( sourceID == 0 )
 	{
 		return;
@@ -159,6 +167,7 @@ void PlayerImpl::stop()
 
 void PlayerImpl::pause()
 {
+	state |= AUDIO_PLAYER_PAUSED;
 	if( sourceID == 0 )
 	{
 		LOG->error("%s:%i Audio player is not initialized." , __FILE__ , __LINE__ );
@@ -219,44 +228,58 @@ void PlayerImpl::play()
 		return;
 	}
 
-	if( resource->isStream() )
+	// resume paused
+	if( state & AUDIO_PLAYER_PAUSED )
 	{
-		// Stream
-		// TODO hardcoded OGG
-		Decoder::Ptr decoder = Resource::createDecoder( resource->data() , "ogg" );
-
-		if( !decoder )
-		{
-			return;
-		}
-
-		streamData.reset();
-		streamData = std::make_shared<StreamData>( decoder , AUDIO_BUFFER_SIZE );
-		for( int i = 0 ; i < AUDIO_BUFFER_COUNT ; ++i )
-		{
-			streamQueue( i );
-		}
-	}
-	else if( resource->isEffect() )
-	{
-		// Effect
-		// only using queubuffers
-		// (this is due to, with some devices, the source type
-		// could not be transformed from 1 type to another, without
-		// destroy..)
-		uint bufferID = resource->getBufferID();
-		alSourceQueueBuffers( sourceID , 1 , &bufferID );
-		int error = 0;
-		if((error = alGetError()) != AL_NO_ERROR)
-		{
-			LOG->error("%s:%i AL Error %i." , __FILE__ , __LINE__ , error );
-			return;
-		}
+		state &= ~AUDIO_PLAYER_PAUSED;
 	}
 	else
 	{
-		LOG->error("%s:%i unknown resource type." , __FILE__ , __LINE__ );
-		return;
+		if( resource->isStream() )
+		{
+			state |= AUDIO_PLAYER_PLAY;
+			state |= AUDIO_PLAYER_STREAM;
+
+			// Stream
+			// TODO hardcoded OGG
+			Decoder::Ptr decoder = Resource::createDecoder( resource->data() , "ogg" );
+
+			if( !decoder )
+			{
+				return;
+			}
+
+			streamData.reset();
+			streamData = std::make_shared<StreamData>( decoder , AUDIO_BUFFER_SIZE );
+			for( int i = 0 ; i < AUDIO_BUFFER_COUNT ; ++i )
+			{
+				streamQueue( i );
+			}
+		}
+		else if( resource->isEffect() )
+		{
+			state |= AUDIO_PLAYER_PLAY;
+			state &= ~AUDIO_PLAYER_STREAM;
+
+			// Effect
+			// only using queubuffers
+			// (this is due to, with some devices, the source type
+			// could not be transformed from 1 type to another, without
+			// destroy..)
+			uint bufferID = resource->getBufferID();
+			alSourceQueueBuffers( sourceID , 1 , &bufferID );
+			int error = 0;
+			if((error = alGetError()) != AL_NO_ERROR)
+			{
+				LOG->error("%s:%i AL Error %i." , __FILE__ , __LINE__ , error );
+				return;
+			}
+		}
+		else
+		{
+			LOG->error("%s:%i unknown resource type." , __FILE__ , __LINE__ );
+			return;
+		}
 	}
 
 	alSourcePlay( sourceID );
@@ -270,15 +293,35 @@ void PlayerImpl::play()
 
 void PlayerImpl::update()
 {
+	if( (state & AUDIO_PLAYER_PLAY) == 0 )
+	{
+		return;
+	}
+
 	// upon stopping, release the ID.
-	if( sourceID == 0 || (!resource) || resource->isEffect() )
+	if( sourceID == 0 || (!resource) )
 	{
 		return;
 	}
 
 	// Stream!
-	// assuming that all data in StreamData is initialized correctly.
+	if( !streamData )
+	{
+		state &= ~AUDIO_PLAYER_PLAY;
+		return;
+	}
+
 	int error;
+
+	// Query source state..
+	int sourceState = 0;
+	alGetSourcei( sourceID , AL_SOURCE_STATE, &sourceState );
+	if((error = alGetError()) != AL_NO_ERROR)
+	{
+		LOG->error("%s:%i AL Error %i." , __FILE__ , __LINE__ , error );
+		return;
+	}
+
 	int count = 0;
 	alGetSourcei( sourceID , AL_BUFFERS_PROCESSED, &count );
 	if((error = alGetError()) != AL_NO_ERROR)
@@ -307,6 +350,26 @@ void PlayerImpl::update()
 			continue;
 		}
 		streamQueue( index );
+
+		// seems that AL has ran out of things to play..
+		// lets set the state stopped.
+		if( sourceState == AL_STOPPED && streamData->isFinished() )
+		{
+			state &= ~AUDIO_PLAYER_PLAY;
+		}
+	}
+
+	if( (state & AUDIO_PLAYER_PLAY) != 0 && sourceState == AL_STOPPED )
+	{
+		// premature stop?
+		// lets continue..
+		alSourcePlay( sourceID );
+		int error = 0;
+		if((error = alGetError()) != AL_NO_ERROR)
+		{
+			LOG->error("%s:%i AL Error %i" , __FILE__ , __LINE__ , error );
+			return;
+		}
 	}
 }
 

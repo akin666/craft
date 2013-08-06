@@ -66,6 +66,7 @@ private:
 	glm::vec3 position;
 	float volume;
 	float pitch;
+	uint32 state;
 public:
 	PlayerImpl( Context::Ptr context );
 	virtual ~PlayerImpl();

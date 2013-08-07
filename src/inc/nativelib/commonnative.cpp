@@ -411,6 +411,56 @@ bool saveImageFile( const std::string& hint , const std::string& path , int widt
 	return false;
 }
 
+/*
+// Spin in a loop for 50*spinCount cycles
+// On out-of-order CPUs the sub and jne will not add
+// any execution time.
+static void SpinALot(int spinCount)
+{
+    __asm
+    {
+        mov ecx, spinCount
+start:
+        add eax, eax // Repeat 50 times
+
+        sub ecx,1
+        jne start
+    }
+}
+
+// Calculate the current CPU frequency in GHz, one time.
+static float GetFrequency()
+{
+    double start = GetTime();
+    // Spin for 500,000 cycles (50 * spinCount). This should
+    // be fast enough to usually avoid any interrupts.
+    SpinALot(10000);
+    double elapsed = GetTime() – start;
+    double frequency = (500000 / elapsed) / 1e9;
+    return (float)frequency;
+}
+
+// Calculate the current CPU frequency multiple times
+// and return the largest frequency seen.
+static float GetSampledFrequency(int iterations)
+{
+    float maxFrequency = 0.0;
+    for (int i = 0; i < iterations; ++i)
+    {
+        float frequency = GetFrequency();
+        if (frequency > maxFrequency)
+            maxFrequency = frequency;
+    }
+
+    return maxFrequency;
+}
+*/
+
+float getCPUFrequency()
+{
+	return 0.0f;
+}
+
 } // native
 
 #endif // USE_COMMON_NATIVE

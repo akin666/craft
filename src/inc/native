@@ -62,6 +62,8 @@ void closeMMAP( void *ptr , int size , int& fd );
 // Image streaming
 bool saveImageFile( const std::string& hint , const std::string& path , int width , int heigth , pixel::Format format , const void *pixels );
 
+float getCPUFrequency();
+
 } // namespace native
 
 #endif // NATIVE_H_

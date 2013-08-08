@@ -29,8 +29,12 @@ public:
 	virtual void setPosition( glm::mat4& matrix ) = 0;
 	virtual bool set( Resource::Ptr& data ) = 0;
 
+	//  how "loud" the sound is. 1 is the normal loudness. Below 1 the sound will be quieter.
 	virtual void setVolume( float volume ) = 0;
-	virtual void setPitch( float pitch ) = 0;
+
+	//  how "fast" the sound is. 1 is the normal speed. Below 1 the sound will take longer to play.
+	// For instance, a 1 minute sound with speed 0.5 will take 2 minutes, and only 30 seconds with a speed of 2.
+	virtual void setSpeed( float speed ) = 0;
 
 	virtual void setMaxDistance( float distance ) = 0;
 	virtual void setRollOffFactor( float factor ) = 0;

@@ -66,7 +66,7 @@ private:
 
 	glm::vec4 position;
 	float volume;				// 1.0f
-	float pitch;				// 1.0f
+	float speed;				// 1.0f
 	float maxDistance;			// 10.0f
 	float rolloffFactor;		// 1.0f
 	float referenceDistance;	// 5.0f
@@ -89,7 +89,7 @@ public:
 	virtual bool set( Resource::Ptr& data );
 
 	virtual void setVolume( float volume );
-	virtual void setPitch( float pitch );
+	virtual void setSpeed( float pitch );
 
 	virtual void setMaxDistance( float distance );
 	virtual void setRollOffFactor( float factor );

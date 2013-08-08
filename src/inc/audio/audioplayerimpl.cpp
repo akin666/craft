@@ -21,7 +21,7 @@ PlayerImpl::PlayerImpl( Context::Ptr context )
 , context( context )
 , state( AUDIO_PLAYER_NONE )
 , volume( 1.0f )
-, pitch( 1.0f )
+, speed( 1.0f )
 , maxDistance( 10.0f )
 , rolloffFactor( 1.0f )
 , referenceDistance( 1.0f )
@@ -84,7 +84,7 @@ void PlayerImpl::apply()
 		{
 			LOG->error("%s:%i AL Error %i" , __FILE__ , __LINE__ , error );
 		}
-		alSourcef( sourceID , AL_PITCH , pitch );
+		alSourcef( sourceID , AL_PITCH , speed );
 		if((error = alGetError()) != AL_NO_ERROR)
 		{
 			LOG->error("%s:%i AL Error %i" , __FILE__ , __LINE__ , error );
@@ -180,13 +180,13 @@ void PlayerImpl::setVolume( float volume )
 	}
 }
 
-void PlayerImpl::setPitch( float pitch )
+void PlayerImpl::setSpeed( float speed )
 {
-	this->pitch = pitch;
+	this->speed = speed;
 
 	if( sourceID != 0 )
 	{
-		alSourcef( sourceID , AL_PITCH , pitch );
+		alSourcef( sourceID , AL_PITCH , speed );
 		int error = 0;
 		if((error = alGetError()) != AL_NO_ERROR)
 		{

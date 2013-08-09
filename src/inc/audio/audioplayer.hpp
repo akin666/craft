@@ -39,9 +39,9 @@ public:
 	virtual void setMaxDistance( float distance ) = 0;
 	virtual void setRollOffFactor( float factor ) = 0;
 	virtual void setReferenceDistance( float refdist ) = 0;
-	virtual void setMinGain( float min ) = 0;
-	virtual void setMaxGain( float max ) = 0;
-	virtual void setOuterGain( float outer ) = 0;
+	virtual void setMinVolume( float min ) = 0;
+	virtual void setMaxVolume( float max ) = 0;
+	virtual void setOuterVolume( float outer ) = 0;
 	virtual void setInnerAngle( float iangle ) = 0;
 	virtual void setOuterAngle( float oangle ) = 0;
 

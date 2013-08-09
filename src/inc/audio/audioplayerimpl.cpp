@@ -25,9 +25,9 @@ PlayerImpl::PlayerImpl( Context::Ptr context )
 , maxDistance( 10.0f )
 , rolloffFactor( 1.0f )
 , referenceDistance( 1.0f )
-, minGain( 0.0f )
-, maxGain( 1.0f )
-, outerGain( 0.1f )
+, minVolume( 0.0f )
+, maxVolume( 1.0f )
+, outerVolume( 0.1f )
 , innerAngle( 360.0f )
 , outerAngle( 360.0f )
 {
@@ -54,17 +54,17 @@ void PlayerImpl::apply()
 		{
 			LOG->error("%s:%i AL Error %i" , __FILE__ , __LINE__ , error );
 		}
-		alSourcef( sourceID , AL_CONE_OUTER_GAIN , outerGain );
+		alSourcef( sourceID , AL_CONE_OUTER_GAIN , outerVolume );
 		if((error = alGetError()) != AL_NO_ERROR)
 		{
 			LOG->error("%s:%i AL Error %i" , __FILE__ , __LINE__ , error );
 		}
-		alSourcef( sourceID , AL_MAX_GAIN , maxGain );
+		alSourcef( sourceID , AL_MAX_GAIN , maxVolume );
 		if((error = alGetError()) != AL_NO_ERROR)
 		{
 			LOG->error("%s:%i AL Error %i" , __FILE__ , __LINE__ , error );
 		}
-		alSourcef( sourceID , AL_MIN_GAIN , minGain );
+		alSourcef( sourceID , AL_MIN_GAIN , minVolume );
 		if((error = alGetError()) != AL_NO_ERROR)
 		{
 			LOG->error("%s:%i AL Error %i" , __FILE__ , __LINE__ , error );
@@ -241,13 +241,13 @@ void PlayerImpl::setReferenceDistance( float refdist )
 	}
 }
 
-void PlayerImpl::setMinGain( float min )
+void PlayerImpl::setMinVolume( float min )
 {
-	this->minGain = min;
+	this->minVolume = min;
 
 	if( sourceID != 0 )
 	{
-		alSourcef( sourceID , AL_MIN_GAIN , minGain );
+		alSourcef( sourceID , AL_MIN_GAIN , minVolume );
 		int error = 0;
 		if((error = alGetError()) != AL_NO_ERROR)
 		{
@@ -256,13 +256,13 @@ void PlayerImpl::setMinGain( float min )
 	}
 }
 
-void PlayerImpl::setMaxGain( float max )
+void PlayerImpl::setMaxVolume( float max )
 {
-	this->maxGain = max;
+	this->maxVolume = max;
 
 	if( sourceID != 0 )
 	{
-		alSourcef( sourceID , AL_MAX_GAIN , maxGain );
+		alSourcef( sourceID , AL_MAX_GAIN , maxVolume );
 		int error = 0;
 		if((error = alGetError()) != AL_NO_ERROR)
 		{
@@ -271,13 +271,13 @@ void PlayerImpl::setMaxGain( float max )
 	}
 }
 
-void PlayerImpl::setOuterGain( float outer )
+void PlayerImpl::setOuterVolume( float outer )
 {
-	this->outerGain = outer;
+	this->outerVolume = outer;
 
 	if( sourceID != 0 )
 	{
-		alSourcef( sourceID , AL_CONE_OUTER_GAIN , outerGain );
+		alSourcef( sourceID , AL_CONE_OUTER_GAIN , outerVolume );
 		int error = 0;
 		if((error = alGetError()) != AL_NO_ERROR)
 		{

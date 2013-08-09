@@ -70,9 +70,9 @@ private:
 	float maxDistance;			// 10.0f
 	float rolloffFactor;		// 1.0f
 	float referenceDistance;	// 5.0f
-	float minGain;				// 0.1f
-	float maxGain;				// 1.1f
-	float outerGain;			// 0.5f
+	float minVolume;			// 0.1f
+	float maxVolume;			// 1.1f
+	float outerVolume;			// 0.5f
 	float innerAngle;			// 360.f
 	float outerAngle;			// 360.f
 
@@ -94,9 +94,9 @@ public:
 	virtual void setMaxDistance( float distance );
 	virtual void setRollOffFactor( float factor );
 	virtual void setReferenceDistance( float refdist );
-	virtual void setMinGain( float min );
-	virtual void setMaxGain( float max );
-	virtual void setOuterGain( float outer );
+	virtual void setMinVolume( float min );
+	virtual void setMaxVolume( float max );
+	virtual void setOuterVolume( float outer );
 	virtual void setInnerAngle( float iangle );
 	virtual void setOuterAngle( float oangle );
 

@@ -89,7 +89,7 @@ public:
 	virtual bool set( Resource::Ptr& data );
 
 	virtual void setVolume( float volume );
-	virtual void setSpeed( float pitch );
+	virtual void setSpeed( float speed );
 
 	virtual void setMaxDistance( float distance );
 	virtual void setRollOffFactor( float factor );
